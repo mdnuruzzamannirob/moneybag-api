@@ -465,7 +465,7 @@ const openApiSpec: OpenApiDocument = {
                   password: {
                     type: 'string',
                     minLength: 8,
-                    example: 'NewPassword123!',
+                    example: 'Password123!',
                   },
                 },
               },
@@ -533,7 +533,7 @@ const openApiSpec: OpenApiDocument = {
                   newPassword: {
                     type: 'string',
                     minLength: 8,
-                    example: 'NewPassword123!',
+                    example: 'Password123!',
                   },
                 },
               },
