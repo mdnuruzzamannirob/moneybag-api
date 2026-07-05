@@ -46,6 +46,10 @@ jobs:
           ${{ secrets.CI_ENV_FILE }}
           EOF
 
+      - name: Load env vars into job
+        run: |
+          cat .env.test | grep -v '^#' | grep -v '^$' >> "$GITHUB_ENV"
+
       - run: pnpm install --frozen-lockfile
       - run: pnpm prisma:generate
       - run: pnpm prisma:migrate deploy
