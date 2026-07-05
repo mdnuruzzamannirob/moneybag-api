@@ -41,7 +41,10 @@ jobs:
           cache: pnpm
 
       - name: Create .env.test file
-        run: echo "${{ secrets.CI_ENV_FILE }}" > .env.test
+        run: |
+          cat << 'EOF' > .env.test
+          ${{ secrets.CI_ENV_FILE }}
+          EOF
 
       - run: pnpm install --frozen-lockfile
       - run: pnpm prisma:generate
