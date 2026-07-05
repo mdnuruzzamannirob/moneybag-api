@@ -48,7 +48,7 @@ jobs:
 
       - name: Load env vars into job
         run: |
-          cat .env.test | grep -v '^#' | grep -v '^$' >> "$GITHUB_ENV"
+          grep -v '^#' .env.test | grep -v '^$' | sed -e 's/^\([^=]*\)="\(.*\)"$/\1=\2/' >> "$GITHUB_ENV"
 
       - run: pnpm install --frozen-lockfile
       - run: pnpm prisma:generate
