@@ -3,8 +3,7 @@ import type { ZodTypeAny } from 'zod';
 import { AppError } from '../utils/response.js';
 
 export const validate =
-  (schema: ZodTypeAny) =>
-  (req: Request, res: Response, next: NextFunction) => {
+  (schema: ZodTypeAny) => (req: Request, res: Response, next: NextFunction) => {
     const parsed = schema.safeParse({
       ...(Object.keys(req.body ?? {}).length ? { body: req.body } : {}),
       ...(Object.keys(req.params ?? {}).length ? { params: req.params } : {}),

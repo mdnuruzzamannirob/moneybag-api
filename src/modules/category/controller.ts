@@ -9,7 +9,10 @@ export const list: RequestHandler = async (req, res, next) => {
       res,
       200,
       'Categories fetched',
-      await service.list(req.user!.id, query as Parameters<typeof service.list>[1]),
+      await service.list(
+        req.user!.id,
+        query as Parameters<typeof service.list>[1],
+      ),
     );
   } catch (error) {
     next(error);

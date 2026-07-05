@@ -1,14 +1,12 @@
 import { prisma } from '../../config/db.js';
 
-export const users = async (
-  query: {
-    search?: string;
-    role?: 'USER' | 'ADMIN';
-    isActive?: boolean;
-    page: number;
-    limit: number;
-  },
-) => {
+export const users = async (query: {
+  search?: string;
+  role?: 'USER' | 'ADMIN';
+  isActive?: boolean;
+  page: number;
+  limit: number;
+}) => {
   const where = {
     ...(query.role ? { role: query.role } : {}),
     ...(query.isActive !== undefined ? { isActive: query.isActive } : {}),
