@@ -8,12 +8,6 @@ on:
 jobs:
   quality-gate:
     runs-on: ubuntu-latest
-    env:
-      NODE_ENV: test
-      DATABASE_URL: ${{ secrets.CI_DATABASE_URL }}
-      REDIS_URL: ${{ secrets.CI_REDIS_URL }}
-      JWT_ACCESS_SECRET: ${{ secrets.CI_JWT_ACCESS_SECRET }}
-      JWT_REFRESH_SECRET: ${{ secrets.CI_JWT_REFRESH_SECRET }}
 
     services:
       postgres:
@@ -45,6 +39,9 @@ jobs:
         with:
           node-version: 24
           cache: pnpm
+
+      - name: Create .env.test file
+        run: echo "${{ secrets.CI_ENV_FILE }}" > .env.test
 
       - run: pnpm install --frozen-lockfile
       - run: pnpm prisma:generate
