@@ -1,4 +1,4 @@
-import { describe, it, expect } from '@jest/globals';
+import { beforeEach, describe, expect, it } from '@jest/globals';
 import request from 'supertest';
 import app from '../../src/app.js';
 import { prisma } from '../../src/config/db.js';
@@ -57,8 +57,8 @@ describe('Savings Goal Module Integration Tests', () => {
       .expect(200);
 
     expect(res.body.success).toBe(true);
-    expect(res.body.data.items).toHaveLength(1);
-    expect(res.body.data.items[0].title).toBe('New Car');
+    expect(res.body.data).toHaveLength(1);
+    expect(res.body.data[0].title).toBe('New Car');
   });
 
   it('should contribute toward a savings goal', async () => {

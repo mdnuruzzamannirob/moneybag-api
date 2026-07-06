@@ -1,4 +1,4 @@
-import { describe, it, expect } from '@jest/globals';
+import { beforeEach, describe, expect, it } from '@jest/globals';
 import request from 'supertest';
 import app from '../../src/app.js';
 import { prisma } from '../../src/config/db.js';
@@ -56,7 +56,7 @@ describe('Admin Module Integration Tests', () => {
       .expect(200);
 
     expect(res.body.success).toBe(true);
-    expect(res.body.data.items).toHaveLength(2); // standard user + admin
+    expect(res.body.data).toHaveLength(2); // standard user + admin
   });
 
   it('should allow admin to update user active status', async () => {

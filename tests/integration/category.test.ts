@@ -1,4 +1,4 @@
-import { describe, it, expect } from '@jest/globals';
+import { beforeEach, describe, expect, it } from '@jest/globals';
 import request from 'supertest';
 import app from '../../src/app.js';
 import { prisma } from '../../src/config/db.js';
@@ -31,9 +31,9 @@ describe('Category Module Integration Tests', () => {
       .expect(200);
 
     expect(res.body.success).toBe(true);
-    expect(res.body.data.items).toBeDefined();
-    expect(res.body.data.items.length).toBe(5); // Default seeded categories count
-    expect(res.body.data.meta.total).toBe(5);
+    expect(res.body.data).toBeDefined();
+    expect(res.body.data.length).toBe(5); // Default seeded categories count
+    expect(res.body.meta.total).toBe(5);
   });
 
   it('should filter categories by type', async () => {
@@ -43,7 +43,7 @@ describe('Category Module Integration Tests', () => {
       .expect(200);
 
     expect(res.body.success).toBe(true);
-    const items = res.body.data.items as Category[];
+    const items = res.body.data as Category[];
     expect(items.length).toBeLessThan(5);
     expect(items.every((category) => category.type === 'INCOME')).toBe(true);
   });
