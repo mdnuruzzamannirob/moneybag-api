@@ -1,6 +1,6 @@
 import type { RequestHandler } from 'express';
-import * as service from './service.js';
 import { sendResponse } from '../../utils/response.js';
+import * as service from './service.js';
 
 export const create: RequestHandler = async (req, res, next) => {
   try {
@@ -18,15 +18,11 @@ export const create: RequestHandler = async (req, res, next) => {
 export const list: RequestHandler = async (req, res, next) => {
   try {
     const query = res.locals.validated?.query ?? req.query;
-    sendResponse(
-      res,
-      200,
-      'Savings goals fetched',
-      await service.list(
-        req.user!.id,
-        query as Parameters<typeof service.list>[1],
-      ),
+    const { items, meta } = await service.list(
+      req.user!.id,
+      query as Parameters<typeof service.list>[1],
     );
+    sendResponse(res, 200, 'Savings goals fetched', items, meta);
   } catch (error) {
     next(error);
   }

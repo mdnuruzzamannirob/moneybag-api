@@ -13,8 +13,8 @@ export const yearlySchema = z.object({
 
 export const trendSchema = z.object({
   query: z.object({
-    from: z.string().datetime(),
-    to: z.string().datetime(),
+    from: z.coerce.date(),
+    to: z.coerce.date(),
   }),
 });
 

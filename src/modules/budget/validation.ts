@@ -4,9 +4,9 @@ export const createBudgetSchema = z
   .object({
     body: z
       .object({
-        limit: z.number().positive(),
-        alertThreshold: z.number().int().min(1).max(100).default(80),
-        month: z.number().int().min(1).max(12),
+        limit: z.coerce.number().positive(),
+        alertThreshold: z.coerce.number().int().min(1).max(100).default(80),
+        month: z.coerce.number().int().min(1).max(12),
         year: z.number().int().min(1970),
         categoryId: z.string().uuid(),
       })

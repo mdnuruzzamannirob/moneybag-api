@@ -445,7 +445,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"token\": \"8c5d7f1c...\",\n  \"password\": \"NewPassword123!\"\n}",
+                  "raw": "{\n  \"token\": \"8c5d7f1c...\",\n  \"password\": \"Password123!\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -668,7 +668,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"currentPassword\": \"Password123!\",\n  \"newPassword\": \"NewPassword123!\"\n}",
+                  "raw": "{\n  \"currentPassword\": \"Password123!\",\n  \"newPassword\": \"Password123!\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -1116,12 +1116,12 @@
                     },
                     {
                       "key": "from",
-                      "value": "2026-07-05T15:17:28.642Z",
+                      "value": "2026-07-06T03:46:35.842Z",
                       "description": ""
                     },
                     {
                       "key": "to",
-                      "value": "2026-07-05T15:17:28.642Z",
+                      "value": "2026-07-06T03:46:35.843Z",
                       "description": ""
                     },
                     {
@@ -1225,7 +1225,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"amount\": 1250,\n  \"type\": \"INCOME\",\n  \"categoryId\": \"00000000-0000-0000-0000-000000000001\",\n  \"note\": \"Salary for July\",\n  \"date\": \"2026-07-05T15:17:28.642Z\",\n  \"tags\": [\n    \"salary\",\n    \"monthly\"\n  ],\n  \"receiptUrl\": \"https://res.cloudinary.com/.../receipt.png\",\n  \"isRecurring\": false,\n  \"recurringRule\": \"DAILY\"\n}",
+                  "raw": "{\n  \"amount\": 1250,\n  \"type\": \"INCOME\",\n  \"categoryId\": \"00000000-0000-0000-0000-000000000001\",\n  \"note\": \"Salary for July\",\n  \"date\": \"2026-07-06T03:46:35.843Z\",\n  \"tags\": [\n    \"salary\",\n    \"monthly\"\n  ],\n  \"receiptUrl\": \"https://res.cloudinary.com/.../receipt.png\",\n  \"isRecurring\": false,\n  \"recurringRule\": \"DAILY\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -1396,7 +1396,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"amount\": 1250,\n  \"type\": \"INCOME\",\n  \"categoryId\": \"00000000-0000-0000-0000-000000000001\",\n  \"note\": \"Salary for July\",\n  \"date\": \"2026-07-05T15:17:28.642Z\",\n  \"tags\": [\n    \"salary\",\n    \"monthly\"\n  ],\n  \"receiptUrl\": \"https://res.cloudinary.com/.../receipt.png\",\n  \"isRecurring\": false,\n  \"recurringRule\": \"DAILY\"\n}",
+                  "raw": "{\n  \"amount\": 1250,\n  \"type\": \"INCOME\",\n  \"categoryId\": \"00000000-0000-0000-0000-000000000001\",\n  \"note\": \"Salary for July\",\n  \"date\": \"2026-07-06T03:46:35.843Z\",\n  \"tags\": [\n    \"salary\",\n    \"monthly\"\n  ],\n  \"receiptUrl\": \"https://res.cloudinary.com/.../receipt.png\",\n  \"isRecurring\": false,\n  \"recurringRule\": \"DAILY\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -1997,7 +1997,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"title\": \"New Laptop\",\n  \"targetAmount\": 120000,\n  \"deadline\": \"2026-07-05T15:17:28.643Z\"\n}",
+                  "raw": "{\n  \"title\": \"New Laptop\",\n  \"targetAmount\": 120000,\n  \"deadline\": \"2026-07-06T03:46:35.843Z\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -2512,12 +2512,12 @@
                   "query": [
                     {
                       "key": "from",
-                      "value": "2026-07-05T15:17:28.643Z",
+                      "value": "2026-07-06T03:46:35.843Z",
                       "description": ""
                     },
                     {
                       "key": "to",
-                      "value": "2026-07-05T15:17:28.643Z",
+                      "value": "2026-07-06T03:46:35.843Z",
                       "description": ""
                     }
                   ]

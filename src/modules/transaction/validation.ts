@@ -30,7 +30,7 @@ export const createTransactionSchema = z
         type: txnType,
         categoryId: z.string().uuid(),
         note: z.string().optional(),
-        date: z.string().datetime(),
+        date: z.coerce.date(),
         tags: z.array(z.string()).default([]),
         receiptUrl: z.string().url().optional(),
         isRecurring: z.boolean().default(false),

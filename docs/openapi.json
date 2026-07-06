@@ -688,12 +688,12 @@
                   "password": {
                     "type": "string",
                     "minLength": 8,
-                    "example": "NewPassword123!"
+                    "example": "Password123!"
                   }
                 },
                 "example": {
                   "token": "8c5d7f1c...",
-                  "password": "NewPassword123!"
+                  "password": "Password123!"
                 }
               }
             }
@@ -873,12 +873,12 @@
                   "newPassword": {
                     "type": "string",
                     "minLength": 8,
-                    "example": "NewPassword123!"
+                    "example": "Password123!"
                   }
                 },
                 "example": {
                   "currentPassword": "Password123!",
-                  "newPassword": "NewPassword123!"
+                  "newPassword": "Password123!"
                 }
               }
             }
@@ -1326,7 +1326,7 @@
             "schema": {
               "type": "string",
               "format": "date-time",
-              "example": "2026-07-05T15:01:33.136Z"
+              "example": "2026-07-06T03:46:35.299Z"
             }
           },
           {
@@ -1335,7 +1335,7 @@
             "schema": {
               "type": "string",
               "format": "date-time",
-              "example": "2026-07-05T15:01:33.136Z"
+              "example": "2026-07-06T03:46:35.299Z"
             }
           },
           {
@@ -1500,7 +1500,7 @@
                   "date": {
                     "type": "string",
                     "format": "date-time",
-                    "example": "2026-07-05T15:01:33.136Z"
+                    "example": "2026-07-06T03:46:35.299Z"
                   },
                   "tags": {
                     "type": "array",
@@ -1536,7 +1536,7 @@
                   "type": "INCOME",
                   "categoryId": "00000000-0000-0000-0000-000000000001",
                   "note": "Salary for July",
-                  "date": "2026-07-05T15:01:33.136Z",
+                  "date": "2026-07-06T03:46:35.299Z",
                   "tags": [
                     "salary",
                     "monthly"
@@ -1707,7 +1707,7 @@
                   "date": {
                     "type": "string",
                     "format": "date-time",
-                    "example": "2026-07-05T15:01:33.136Z"
+                    "example": "2026-07-06T03:46:35.299Z"
                   },
                   "tags": {
                     "type": "array",
@@ -1743,7 +1743,7 @@
                   "type": "INCOME",
                   "categoryId": "00000000-0000-0000-0000-000000000001",
                   "note": "Salary for July",
-                  "date": "2026-07-05T15:01:33.136Z",
+                  "date": "2026-07-06T03:46:35.299Z",
                   "tags": [
                     "salary",
                     "monthly"
@@ -2291,13 +2291,13 @@
                   "deadline": {
                     "type": "string",
                     "format": "date-time",
-                    "example": "2026-07-05T15:01:33.136Z"
+                    "example": "2026-07-06T03:46:35.299Z"
                   }
                 },
                 "example": {
                   "title": "New Laptop",
                   "targetAmount": 120000,
-                  "deadline": "2026-07-05T15:01:33.136Z"
+                  "deadline": "2026-07-06T03:46:35.299Z"
                 }
               }
             }
@@ -2721,7 +2721,7 @@
             "schema": {
               "type": "string",
               "format": "date-time",
-              "example": "2026-07-05T15:01:33.136Z"
+              "example": "2026-07-06T03:46:35.299Z"
             }
           },
           {
@@ -2731,7 +2731,7 @@
             "schema": {
               "type": "string",
               "format": "date-time",
-              "example": "2026-07-05T15:01:33.136Z"
+              "example": "2026-07-06T03:46:35.299Z"
             }
           }
         ],
