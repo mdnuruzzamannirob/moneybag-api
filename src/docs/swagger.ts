@@ -26,7 +26,11 @@ const swaggerSpec = swaggerJsdoc({
 });
 
 export const setupSwagger = (app: Express) => {
-  app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, { explorer: true }));
+  app.use(
+    '/api/docs',
+    swaggerUi.serve,
+    swaggerUi.setup(swaggerSpec, { explorer: true }),
+  );
 };
 
 export { swaggerSpec };

@@ -6,7 +6,7 @@ on:
   pull_request:
 
 jobs:
-  lint-test-build:
+  quality-gate:
     runs-on: ubuntu-latest
 
     services:
@@ -14,12 +14,12 @@ jobs:
         image: postgres:18-alpine
         env:
           POSTGRES_DB: expense_tracker_test
-          POSTGRES_USER: expense_admin
-          POSTGRES_PASSWORD: expense_password
+          POSTGRES_USER: ${{ secrets.CI_POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.CI_POSTGRES_PASSWORD }}
         ports:
           - 5432:5432
         options: >-
-          --health-cmd "pg_isready -U expense_admin -d expense_tracker_test"
+          --health-cmd "pg_isready -U $POSTGRES_USER -d expense_tracker_test"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
@@ -40,22 +40,21 @@ jobs:
           node-version: 24
           cache: pnpm
 
+      - name: Create .env.test file
+        run: |
+          cat << 'EOF' > .env.test
+          ${{ secrets.CI_ENV_FILE }}
+          EOF
+
+      - name: Load env vars into job
+        run: |
+          grep -v '^#' .env.test | grep -v '^$' | sed -e 's/^\([^=]*\)="\(.*\)"$/\1=\2/' >> "$GITHUB_ENV"
+
       - run: pnpm install --frozen-lockfile
       - run: pnpm prisma:generate
-        env:
-          DATABASE_URL: postgresql://expense_admin:expense_password@localhost:5432/expense_tracker_test?schema=public
-      - run: pnpm run lint
-      - run: pnpm test
-        env:
-          NODE_ENV: test
-          DATABASE_URL: postgresql://expense_admin:expense_password@localhost:5432/expense_tracker_test?schema=public
-          REDIS_URL: redis://localhost:6379
-          JWT_ACCESS_SECRET: ci_access_secret_at_least_16_chars
-          JWT_REFRESH_SECRET: ci_refresh_secret_at_least_16_chars
+      - run: pnpm prisma:migrate deploy
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm typecheck:test
+      - run: pnpm test:all
       - run: pnpm build
-        env:
-          NODE_ENV: test
-          DATABASE_URL: postgresql://expense_admin:expense_password@localhost:5432/expense_tracker_test?schema=public
-          REDIS_URL: redis://localhost:6379
-          JWT_ACCESS_SECRET: ci_access_secret_at_least_16_chars
-          JWT_REFRESH_SECRET: ci_refresh_secret_at_least_16_chars

@@ -2,7 +2,11 @@ import { Router } from 'express';
 import { authenticate } from '../../middlewares/auth.middleware.js';
 import { validate } from '../../middlewares/validate.middleware.js';
 import * as controller from './controller.js';
-import { createBudgetSchema, listBudgetSchema, updateBudgetSchema } from './validation.js';
+import {
+  createBudgetSchema,
+  listBudgetSchema,
+  updateBudgetSchema,
+} from './validation.js';
 
 const router = Router();
 

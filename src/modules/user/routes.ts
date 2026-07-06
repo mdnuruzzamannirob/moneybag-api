@@ -9,6 +9,10 @@ const router = Router();
 router.use(authenticate);
 router.get('/me', controller.me);
 router.patch('/me', validate(updateProfileSchema), controller.updateMe);
-router.patch('/me/password', validate(changePasswordSchema), controller.changePassword);
+router.patch(
+  '/me/password',
+  validate(changePasswordSchema),
+  controller.changePassword,
+);
 
 export default router;

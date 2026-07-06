@@ -1,0 +1,14 @@
+# Ignore artifacts:
+build
+coverage
+dist
+node_modules
+
+# Ignore files:
+.DS_Store
+.env
+.env.*
+*.lock
+package-lock.json
+pnpm-lock.yaml
+yarn.lock

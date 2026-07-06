@@ -1,4 +1,4 @@
-import PDFDocument from "pdfkit";
+import PDFDocument from 'pdfkit';
 
 export type ReportLine = {
   label: string;
@@ -10,9 +10,9 @@ export const generateReportPdf = (title: string, lines: ReportLine[]) =>
     const doc = new PDFDocument({ margin: 48 });
     const chunks: Buffer[] = [];
 
-    doc.on("data", (chunk: Buffer) => chunks.push(chunk));
-    doc.on("end", () => resolve(Buffer.concat(chunks)));
-    doc.on("error", reject);
+    doc.on('data', (chunk: Buffer) => chunks.push(chunk));
+    doc.on('end', () => resolve(Buffer.concat(chunks)));
+    doc.on('error', reject);
 
     doc.fontSize(20).text(title, { underline: true });
     doc.moveDown();

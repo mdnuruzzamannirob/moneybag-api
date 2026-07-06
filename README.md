@@ -42,7 +42,7 @@ pnpm run lint         # lint src
 pnpm test             # run Jest with coverage
 pnpm prisma:generate  # refresh Prisma Client after schema changes
 pnpm prisma:migrate   # apply database migrations
-pnpm prisma:studio    # inspect the database in Prisma Studio
+pnpm prisma:studio    # inspect the database in Prisma Studio without auto-opening a browser
 pnpm prisma:seed      # seed starter data
 pnpm swagger:generate # write docs/openapi.json from the source spec
 pnpm postman:generate # write docs/postman-collection.json from the source spec
@@ -126,6 +126,9 @@ Services:
 
 The app validates environment variables at startup and exits fast if any required
 value is missing or invalid. See `.env.example` for the full list.
+
+For tests, copy `.env.test.example` to `.env.test` and adjust the test database
+and Redis values for your local machine or CI environment.
 
 ## Notes
 

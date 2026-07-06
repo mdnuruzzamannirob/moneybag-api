@@ -1,6 +1,6 @@
-import cron from "node-cron";
-import { prisma } from "../config/db.js";
-import { sendMail } from "../utils/mailer.js";
+import cron from 'node-cron';
+import { prisma } from '../config/db.js';
+import { sendMail } from '../utils/mailer.js';
 
 export const runBudgetAlertJob = async () => {
   const now = new Date();
@@ -19,7 +19,7 @@ export const runBudgetAlertJob = async () => {
       where: {
         userId: budget.userId,
         categoryId: budget.categoryId,
-        type: "EXPENSE",
+        type: 'EXPENSE',
         date: { gte: start, lt: end },
       },
     });
@@ -37,7 +37,7 @@ export const runBudgetAlertJob = async () => {
 };
 
 export const scheduleBudgetAlertJob = () => {
-  cron.schedule("0 8 * * *", () => {
+  cron.schedule('0 8 * * *', () => {
     void runBudgetAlertJob();
   });
 };

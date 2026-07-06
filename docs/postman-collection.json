@@ -49,7 +49,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"name\": \"Nazmul Hasan\",\n  \"email\": \"nazmul@example.com\",\n  \"password\": \"Password123!\",\n  \"currency\": \"BDT\"\n}",
+                  "raw": "{\n  \"name\": \"Md. Nuruzzaman\",\n  \"email\": \"dev.mdnuruzzaman@gmail.com\",\n  \"password\": \"Password123!\",\n  \"currency\": \"BDT\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -65,7 +65,7 @@
                   "status": "Registered successfully",
                   "code": 201,
                   "header": [],
-                  "body": "{\n  \"message\": \"Registered successfully\",\n  \"data\": {\n    \"user\": {\n      \"id\": \"f4b6b7c3-9d4d-4c08-90d8-0b8e5f3e8c2a\",\n      \"name\": \"Nazmul Hasan\",\n      \"email\": \"nazmul@example.com\",\n      \"role\": \"USER\",\n      \"currency\": \"BDT\"\n    },\n    \"accessToken\": \"eyJhbGciOi...\",\n    \"refreshToken\": \"eyJhbGciOi...\"\n  }\n}"
+                  "body": "{\n  \"message\": \"Registered successfully\",\n  \"data\": {\n    \"user\": {\n      \"id\": \"f4b6b7c3-9d4d-4c08-90d8-0b8e5f3e8c2a\",\n      \"name\": \"Md. Nuruzzaman\",\n      \"email\": \"dev.mdnuruzzaman@gmail.com\",\n      \"role\": \"USER\",\n      \"currency\": \"BDT\"\n    },\n    \"accessToken\": \"eyJhbGciOi...\",\n    \"refreshToken\": \"eyJhbGciOi...\"\n  }\n}"
                 },
                 {
                   "name": "400 Validation failed",
@@ -135,7 +135,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"email\": \"nazmul@example.com\",\n  \"password\": \"Password123!\"\n}",
+                  "raw": "{\n  \"email\": \"dev.mdnuruzzaman@gmail.com\",\n  \"password\": \"Password123!\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -151,7 +151,7 @@
                   "status": "Logged in successfully",
                   "code": 200,
                   "header": [],
-                  "body": "{\n  \"message\": \"Logged in successfully\",\n  \"data\": {\n    \"user\": {\n      \"id\": \"f4b6b7c3-9d4d-4c08-90d8-0b8e5f3e8c2a\",\n      \"name\": \"Nazmul Hasan\",\n      \"email\": \"nazmul@example.com\",\n      \"role\": \"USER\",\n      \"currency\": \"BDT\"\n    },\n    \"accessToken\": \"eyJhbGciOi...\",\n    \"refreshToken\": \"eyJhbGciOi...\"\n  }\n}"
+                  "body": "{\n  \"message\": \"Logged in successfully\",\n  \"data\": {\n    \"user\": {\n      \"id\": \"f4b6b7c3-9d4d-4c08-90d8-0b8e5f3e8c2a\",\n      \"name\": \"Md. Nuruzzaman\",\n      \"email\": \"dev.mdnuruzzaman@gmail.com\",\n      \"role\": \"USER\",\n      \"currency\": \"BDT\"\n    },\n    \"accessToken\": \"eyJhbGciOi...\",\n    \"refreshToken\": \"eyJhbGciOi...\"\n  }\n}"
                 },
                 {
                   "name": "400 Validation failed",
@@ -376,7 +376,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"email\": \"nazmul@example.com\"\n}",
+                  "raw": "{\n  \"email\": \"dev.mdnuruzzaman@gmail.com\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -532,7 +532,7 @@
                   "status": "Profile fetched",
                   "code": 200,
                   "header": [],
-                  "body": "{\n  \"message\": \"Profile fetched\",\n  \"data\": {\n    \"id\": \"f4b6b7c3-9d4d-4c08-90d8-0b8e5f3e8c2a\",\n    \"name\": \"Nazmul Hasan\",\n    \"email\": \"nazmul@example.com\",\n    \"role\": \"USER\",\n    \"currency\": \"BDT\",\n    \"isActive\": true\n  }\n}"
+                  "body": "{\n  \"message\": \"Profile fetched\",\n  \"data\": {\n    \"id\": \"f4b6b7c3-9d4d-4c08-90d8-0b8e5f3e8c2a\",\n    \"name\": \"Md. Nuruzzaman\",\n    \"email\": \"dev.mdnuruzzaman@gmail.com\",\n    \"role\": \"USER\",\n    \"currency\": \"BDT\",\n    \"isActive\": true\n  }\n}"
                 },
                 {
                   "name": "401 Authentication token is required",
@@ -580,7 +580,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"name\": \"Nazmul Hasan\",\n  \"currency\": \"USD\"\n}",
+                  "raw": "{\n  \"name\": \"Md. Nuruzzaman\",\n  \"currency\": \"USD\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -751,7 +751,28 @@
                     "api",
                     "categories"
                   ],
-                  "query": []
+                  "query": [
+                    {
+                      "key": "search",
+                      "value": "string",
+                      "description": ""
+                    },
+                    {
+                      "key": "type",
+                      "value": "INCOME",
+                      "description": "Allowed values: INCOME, EXPENSE"
+                    },
+                    {
+                      "key": "page",
+                      "value": 1,
+                      "description": ""
+                    },
+                    {
+                      "key": "limit",
+                      "value": 20,
+                      "description": ""
+                    }
+                  ]
                 },
                 "description": "List categories",
                 "auth": {
@@ -773,6 +794,14 @@
                   "code": 200,
                   "header": [],
                   "body": "[\n  {\n    \"id\": \"...\",\n    \"name\": \"Food\",\n    \"type\": \"EXPENSE\",\n    \"icon\": \"utensils\",\n    \"color\": \"#f97316\"\n  }\n]"
+                },
+                {
+                  "name": "400 Validation failed",
+                  "originalRequest": {},
+                  "status": "Validation failed",
+                  "code": 400,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\"\n}"
                 },
                 {
                   "name": "401 Authentication token is required",
@@ -886,6 +915,10 @@
                   {
                     "key": "Accept",
                     "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
                   }
                 ],
                 "url": {
@@ -899,6 +932,15 @@
                     "00000000-0000-0000-0000-000000000001"
                   ],
                   "query": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Groceries\",\n  \"type\": \"INCOME\",\n  \"icon\": \"shopping-bag\",\n  \"color\": \"#22c55e\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
                 },
                 "description": "Update category",
                 "auth": {
@@ -1065,7 +1107,7 @@
                     {
                       "key": "type",
                       "value": "INCOME",
-                      "description": ""
+                      "description": "Allowed values: INCOME, EXPENSE"
                     },
                     {
                       "key": "category",
@@ -1074,12 +1116,12 @@
                     },
                     {
                       "key": "from",
-                      "value": "2026-07-04T10:30:59.843Z",
+                      "value": "2026-07-05T15:17:28.642Z",
                       "description": ""
                     },
                     {
                       "key": "to",
-                      "value": "2026-07-04T10:30:59.844Z",
+                      "value": "2026-07-05T15:17:28.642Z",
                       "description": ""
                     },
                     {
@@ -1096,6 +1138,16 @@
                       "key": "limit",
                       "value": 20,
                       "description": ""
+                    },
+                    {
+                      "key": "sortBy",
+                      "value": "date",
+                      "description": "Allowed values: date, amount, createdAt"
+                    },
+                    {
+                      "key": "sortOrder",
+                      "value": "desc",
+                      "description": "Allowed values: asc, desc"
                     }
                   ]
                 },
@@ -1173,7 +1225,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"amount\": 1250,\n  \"type\": \"INCOME\",\n  \"categoryId\": \"00000000-0000-0000-0000-000000000001\",\n  \"note\": \"Salary for July\",\n  \"date\": \"2026-07-04T10:30:59.844Z\",\n  \"tags\": [\n    \"salary\",\n    \"monthly\"\n  ],\n  \"receiptUrl\": \"https://res.cloudinary.com/.../receipt.png\",\n  \"isRecurring\": false,\n  \"recurringRule\": \"DAILY\"\n}",
+                  "raw": "{\n  \"amount\": 1250,\n  \"type\": \"INCOME\",\n  \"categoryId\": \"00000000-0000-0000-0000-000000000001\",\n  \"note\": \"Salary for July\",\n  \"date\": \"2026-07-05T15:17:28.642Z\",\n  \"tags\": [\n    \"salary\",\n    \"monthly\"\n  ],\n  \"receiptUrl\": \"https://res.cloudinary.com/.../receipt.png\",\n  \"isRecurring\": false,\n  \"recurringRule\": \"DAILY\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -1324,6 +1376,10 @@
                   {
                     "key": "Accept",
                     "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
                   }
                 ],
                 "url": {
@@ -1337,6 +1393,15 @@
                     "00000000-0000-0000-0000-000000000001"
                   ],
                   "query": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"amount\": 1250,\n  \"type\": \"INCOME\",\n  \"categoryId\": \"00000000-0000-0000-0000-000000000001\",\n  \"note\": \"Salary for July\",\n  \"date\": \"2026-07-05T15:17:28.642Z\",\n  \"tags\": [\n    \"salary\",\n    \"monthly\"\n  ],\n  \"receiptUrl\": \"https://res.cloudinary.com/.../receipt.png\",\n  \"isRecurring\": false,\n  \"recurringRule\": \"DAILY\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
                 },
                 "description": "Update transaction",
                 "auth": {
@@ -1508,6 +1573,16 @@
                     {
                       "key": "year",
                       "value": 1,
+                      "description": ""
+                    },
+                    {
+                      "key": "page",
+                      "value": 1,
+                      "description": ""
+                    },
+                    {
+                      "key": "limit",
+                      "value": 20,
                       "description": ""
                     }
                   ]
@@ -1719,6 +1794,10 @@
                   {
                     "key": "Accept",
                     "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
                   }
                 ],
                 "url": {
@@ -1732,6 +1811,15 @@
                     "00000000-0000-0000-0000-000000000001"
                   ],
                   "query": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"limit\": 10000,\n  \"alertThreshold\": 80,\n  \"month\": 7,\n  \"year\": 2026,\n  \"categoryId\": \"00000000-0000-0000-0000-000000000001\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
                 },
                 "description": "Update budget",
                 "auth": {
@@ -1817,7 +1905,23 @@
                     "api",
                     "savings-goals"
                   ],
-                  "query": []
+                  "query": [
+                    {
+                      "key": "search",
+                      "value": "string",
+                      "description": ""
+                    },
+                    {
+                      "key": "page",
+                      "value": 1,
+                      "description": ""
+                    },
+                    {
+                      "key": "limit",
+                      "value": 20,
+                      "description": ""
+                    }
+                  ]
                 },
                 "description": "List savings goals",
                 "auth": {
@@ -1839,6 +1943,14 @@
                   "code": 200,
                   "header": [],
                   "body": "{\n  \"success\": true,\n  \"message\": \"Savings goals fetched\",\n  \"data\": null\n}"
+                },
+                {
+                  "name": "400 Validation failed",
+                  "originalRequest": {},
+                  "status": "Validation failed",
+                  "code": 400,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\"\n}"
                 },
                 {
                   "name": "401 Authentication token is required",
@@ -1885,7 +1997,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"title\": \"New Laptop\",\n  \"targetAmount\": 120000,\n  \"deadline\": \"2026-07-04T10:30:59.845Z\"\n}",
+                  "raw": "{\n  \"title\": \"New Laptop\",\n  \"targetAmount\": 120000,\n  \"deadline\": \"2026-07-05T15:17:28.643Z\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -2400,12 +2512,12 @@
                   "query": [
                     {
                       "key": "from",
-                      "value": "2026-07-04T10:30:59.845Z",
+                      "value": "2026-07-05T15:17:28.643Z",
                       "description": ""
                     },
                     {
                       "key": "to",
-                      "value": "2026-07-04T10:30:59.845Z",
+                      "value": "2026-07-05T15:17:28.643Z",
                       "description": ""
                     }
                   ]
@@ -2486,7 +2598,7 @@
                     {
                       "key": "type",
                       "value": "pdf",
-                      "description": ""
+                      "description": "Allowed values: pdf, csv"
                     },
                     {
                       "key": "month",
@@ -2577,7 +2689,33 @@
                     "admin",
                     "users"
                   ],
-                  "query": []
+                  "query": [
+                    {
+                      "key": "search",
+                      "value": "string",
+                      "description": ""
+                    },
+                    {
+                      "key": "role",
+                      "value": "USER",
+                      "description": "Allowed values: USER, ADMIN"
+                    },
+                    {
+                      "key": "isActive",
+                      "value": true,
+                      "description": ""
+                    },
+                    {
+                      "key": "page",
+                      "value": 1,
+                      "description": ""
+                    },
+                    {
+                      "key": "limit",
+                      "value": 20,
+                      "description": ""
+                    }
+                  ]
                 },
                 "description": "List all users",
                 "auth": {
@@ -2599,6 +2737,14 @@
                   "code": 200,
                   "header": [],
                   "body": "{\n  \"success\": true,\n  \"message\": \"Users fetched\",\n  \"data\": null\n}"
+                },
+                {
+                  "name": "400 Validation failed",
+                  "originalRequest": {},
+                  "status": "Validation failed",
+                  "code": 400,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\"\n}"
                 },
                 {
                   "name": "401 Authentication token is required",

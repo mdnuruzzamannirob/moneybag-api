@@ -1,9 +1,9 @@
-import nodemailer from 'nodemailer'
-import { env } from '../config/env.js'
+import nodemailer from 'nodemailer';
+import { env } from '../config/env.js';
 
 const createTransporter = () => {
   if (!env.SMTP_HOST || !env.SMTP_PORT) {
-    return null
+    return null;
   }
 
   return nodemailer.createTransport({
@@ -14,8 +14,8 @@ const createTransporter = () => {
       env.SMTP_USER && env.SMTP_PASS
         ? { user: env.SMTP_USER, pass: env.SMTP_PASS }
         : undefined,
-  })
-}
+  });
+};
 
 export const sendMail = async (
   to: string,
@@ -23,13 +23,13 @@ export const sendMail = async (
   text: string,
   html?: string,
 ) => {
-  const transporter = createTransporter()
+  const transporter = createTransporter();
 
   if (!transporter) {
     console.info(
       `Email skipped; SMTP is not configured. To=${to}, subject=${subject}`,
-    )
-    return
+    );
+    return;
   }
 
   await transporter.sendMail({
@@ -38,5 +38,5 @@ export const sendMail = async (
     subject,
     text,
     html,
-  })
-}
+  });
+};

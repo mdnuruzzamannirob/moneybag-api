@@ -1,7 +1,7 @@
-import type { NextFunction, Request, Response } from "express";
-import { prisma } from "../config/db.js";
-import { AppError } from "../utils/response.js";
-import { verifyAccessToken } from "../utils/jwt.js";
+import type { NextFunction, Request, Response } from 'express';
+import { prisma } from '../config/db.js';
+import { verifyAccessToken } from '../utils/jwt.js';
+import { AppError } from '../utils/response.js';
 
 declare global {
   namespace Express {
@@ -21,10 +21,10 @@ export const authenticate = async (
   next: NextFunction,
 ) => {
   const header = req.headers.authorization;
-  const token = header?.startsWith("Bearer ") ? header.slice(7) : undefined;
+  const token = header?.startsWith('Bearer ') ? header.slice(7) : undefined;
 
   if (!token) {
-    return next(new AppError(401, "Authentication token is required"));
+    return next(new AppError(401, 'Authentication token is required'));
   }
 
   try {
@@ -35,13 +35,13 @@ export const authenticate = async (
     });
 
     if (!user || !user.isActive) {
-      return next(new AppError(401, "User is inactive or no longer exists"));
+      return next(new AppError(401, 'User is inactive or no longer exists'));
     }
 
     req.user = { id: user.id, email: user.email, role: user.role };
     next();
   } catch {
-    next(new AppError(401, "Invalid or expired authentication token"));
+    next(new AppError(401, 'Invalid or expired authentication token'));
   }
 };
 
@@ -49,12 +49,12 @@ export const authorize =
   (...roles: string[]) =>
   (req: Request, _res: Response, next: NextFunction) => {
     if (!req.user) {
-      return next(new AppError(401, "Authentication is required"));
+      return next(new AppError(401, 'Authentication is required'));
     }
 
     if (!roles.includes(req.user.role)) {
       return next(
-        new AppError(403, "You do not have permission to access this resource"),
+        new AppError(403, 'You do not have permission to access this resource'),
       );
     }
 

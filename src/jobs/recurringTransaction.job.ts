@@ -1,10 +1,10 @@
-import cron from "node-cron";
-import { prisma } from "../config/db.js";
+import cron from 'node-cron';
+import { prisma } from '../config/db.js';
 
 const shouldRunToday = (rule: string | null, sourceDate: Date, now: Date) => {
-  if (rule === "DAILY") return true;
-  if (rule === "WEEKLY") return sourceDate.getDay() === now.getDay();
-  if (rule === "MONTHLY") return sourceDate.getDate() === now.getDate();
+  if (rule === 'DAILY') return true;
+  if (rule === 'WEEKLY') return sourceDate.getDay() === now.getDay();
+  if (rule === 'MONTHLY') return sourceDate.getDate() === now.getDate();
   return false;
 };
 
@@ -34,7 +34,7 @@ export const runRecurringTransactionJob = async () => {
 };
 
 export const scheduleRecurringTransactionJob = () => {
-  cron.schedule("5 0 * * *", () => {
+  cron.schedule('5 0 * * *', () => {
     void runRecurringTransactionJob();
   });
 };

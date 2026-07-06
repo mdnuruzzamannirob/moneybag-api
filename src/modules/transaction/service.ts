@@ -8,6 +8,7 @@ type ListQuery = {
   from?: string;
   to?: string;
   tag?: string;
+  search?: string;
   page: number;
   limit: number;
   sortBy: 'date' | 'amount' | 'createdAt';
@@ -31,39 +32,77 @@ const invalidateReports = async (userId: string) => {
   if (keys.length) await redis.del(...keys);
 };
 
-const ensureCategory = async (userId: string, categoryId: string, type?: 'INCOME' | 'EXPENSE') => {
-  const category = await prisma.category.findFirst({ where: { id: categoryId, userId } });
+const ensureCategory = async (
+  userId: string,
+  categoryId: string,
+  type?: 'INCOME' | 'EXPENSE',
+) => {
+  const category = await prisma.category.findFirst({
+    where: { id: categoryId, userId },
+  });
   if (!category) throw new AppError(404, 'Category not found');
-  if (type && category.type !== type) throw new AppError(400, 'Category type does not match transaction type');
+  if (type && category.type !== type)
+    throw new AppError(400, 'Category type does not match transaction type');
 };
 
 const ensureOwned = async (userId: string, id: string) => {
-  const transaction = await prisma.transaction.findFirst({ where: { id, userId } });
+  const transaction = await prisma.transaction.findFirst({
+    where: { id, userId },
+  });
   if (!transaction) throw new AppError(404, 'Transaction not found');
   return transaction;
 };
 
 export const list = async (userId: string, query: ListQuery) => {
+  const page = Number(query.page) || 1;
+  const limit = Number(query.limit) || 20;
+
   const where = {
     userId,
     type: query.type,
     categoryId: query.category,
     tags: query.tag ? { has: query.tag } : undefined,
-    date: query.from || query.to ? { gte: query.from ? new Date(query.from) : undefined, lte: query.to ? new Date(query.to) : undefined } : undefined,
+    ...(query.search
+      ? {
+          OR: [
+            {
+              note: {
+                contains: query.search,
+                mode: 'insensitive' as const,
+              },
+            },
+            {
+              tags: {
+                has: query.search,
+              },
+            },
+          ],
+        }
+      : {}),
+    date:
+      query.from || query.to
+        ? {
+            gte: query.from ? new Date(query.from) : undefined,
+            lte: query.to ? new Date(query.to) : undefined,
+          }
+        : undefined,
   };
-  const skip = (query.page - 1) * query.limit;
+  const skip = (page - 1) * limit;
   const [items, total] = await Promise.all([
     prisma.transaction.findMany({
       where,
       include: { category: true },
       orderBy: { [query.sortBy]: query.sortOrder },
       skip,
-      take: query.limit,
+      take: limit,
     }),
     prisma.transaction.count({ where }),
   ]);
 
-  return { items, meta: { total, page: query.page, limit: query.limit, pages: Math.ceil(total / query.limit) } };
+  return {
+    items,
+    meta: { total, page, limit, pages: Math.ceil(total / limit) },
+  };
 };
 
 export const create = async (userId: string, input: TransactionInput) => {
@@ -75,10 +114,18 @@ export const create = async (userId: string, input: TransactionInput) => {
   return transaction;
 };
 
-export const update = async (userId: string, id: string, input: Partial<TransactionInput>) => {
+export const update = async (
+  userId: string,
+  id: string,
+  input: Partial<TransactionInput>,
+) => {
   const current = await ensureOwned(userId, id);
   if (input.categoryId || input.type) {
-    await ensureCategory(userId, input.categoryId ?? current.categoryId, input.type ?? current.type);
+    await ensureCategory(
+      userId,
+      input.categoryId ?? current.categoryId,
+      input.type ?? current.type,
+    );
   }
   const transaction = await prisma.transaction.update({
     where: { id },
@@ -103,9 +150,14 @@ export const importCsv = async (userId: string, csv: string) => {
   for (const row of rows) {
     if (!row.trim()) continue;
     const values = row.split(',').map((item) => item.trim());
-    const record = Object.fromEntries(headers.map((header, index) => [header, values[index] ?? ''])) as Record<string, string>;
+    const record = Object.fromEntries(
+      headers.map((header, index) => [header, values[index] ?? '']),
+    ) as Record<string, string>;
     if (!record.amount || !record.type || !record.categoryId || !record.date) {
-      throw new AppError(400, 'CSV rows must include amount, type, categoryId, and date');
+      throw new AppError(
+        400,
+        'CSV rows must include amount, type, categoryId, and date',
+      );
     }
     const input: TransactionInput = {
       amount: Number(record.amount),

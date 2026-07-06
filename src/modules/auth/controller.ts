@@ -22,7 +22,12 @@ export const login: RequestHandler = async (req, res, next) => {
 
 export const refresh: RequestHandler = async (req, res, next) => {
   try {
-    sendResponse(res, 200, 'Token refreshed', await authService.refresh(req.body.refreshToken));
+    sendResponse(
+      res,
+      200,
+      'Token refreshed',
+      await authService.refresh(req.body.refreshToken),
+    );
   } catch (error) {
     next(error);
   }
@@ -40,7 +45,11 @@ export const logout: RequestHandler = async (req, res, next) => {
 export const forgotPassword: RequestHandler = async (req, res, next) => {
   try {
     await authService.forgotPassword(req.body.email);
-    sendResponse(res, 200, 'If the email exists, a reset message has been sent');
+    sendResponse(
+      res,
+      200,
+      'If the email exists, a reset message has been sent',
+    );
   } catch (error) {
     next(error);
   }
