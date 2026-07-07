@@ -32,22 +32,16 @@ export const login: RequestHandler = async (req, res, next) => {
 
 export const refresh: RequestHandler = async (req, res, next) => {
   try {
-    // Prefer the refresh token from the HTTP-only cookie; fall back to the
-    // request body for backward compatibility with non-browser clients.
     const refreshToken =
       req.cookies?.refreshToken || req.body?.refreshToken;
     if (!refreshToken) {
-      // No cookie, no point keeping stale access cookies around.
       clearAuthCookies(res);
       return sendResponse(res, 401, 'Refresh token is required');
     }
     const tokens = await authService.refresh(refreshToken);
     setAuthCookies(res, tokens);
-    // Body intentionally has no tokens. Cookies only.
     sendResponse(res, 200, 'Token refreshed');
   } catch (error) {
-    // On refresh failure wipe both auth cookies so the next request from
-    // the browser starts from a clean state.
     clearAuthCookies(res);
     if (error instanceof AppError) {
       return sendResponse(res, error.statusCode, error.message);
@@ -66,8 +60,6 @@ export const logout: RequestHandler = async (req, res, next) => {
     clearAuthCookies(res);
     sendResponse(res, 200, 'Logged out successfully');
   } catch (error) {
-    // Even on failure, clear cookies so the client is forced to log in
-    // again. Failing silently here is acceptable.
     clearAuthCookies(res);
     next(error);
   }
@@ -101,8 +93,6 @@ export const forgotPassword: RequestHandler = async (req, res, next) => {
 export const resetPassword: RequestHandler = async (req, res, next) => {
   try {
     await authService.resetPassword(req.body.token, req.body.password);
-    // Force the user to log in again with their new password by clearing
-    // any cookies that might still be on the device.
     clearAuthCookies(res);
     sendResponse(res, 200, 'Password reset successfully');
   } catch (error) {

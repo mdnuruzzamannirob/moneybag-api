@@ -24,9 +24,6 @@ export const loginSchema = z
   })
   .passthrough();
 
-// Both refresh and logout accept an optional refreshToken in the body
-// because cookies are the primary transport, but body is supported for
-// backward compatibility with non-browser clients.
 const tokenBodySchema = z
   .object({
     body: z

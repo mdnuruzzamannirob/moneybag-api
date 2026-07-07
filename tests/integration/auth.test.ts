@@ -164,7 +164,7 @@ describe('Auth Module Integration Tests', () => {
   });
 
   it('should fail refresh with a revoked token and revoke all user refresh tokens', async () => {
-    const regRes = await request(app)
+    await request(app)
       .post('/api/auth/register')
       .send({ ...testUser, email: 'revoke-all@example.com' })
       .expect(201);

@@ -1,5 +1,5 @@
+import { afterAll, beforeAll, beforeEach, expect, jest } from '@jest/globals';
 import { config as loadEnv } from 'dotenv';
-import { jest } from '@jest/globals';
 import type { NextFunction, Request, Response } from 'express';
 
 loadEnv({ path: '.env.test' });
@@ -10,8 +10,7 @@ process.env.PORT ??= '5001';
 process.env.REDIS_URL ??= 'redis://localhost:6379';
 
 jest.mock('../src/middlewares/rateLimiter.js', () => ({
-  apiRateLimiter: (_req: Request, _res: Response, next: NextFunction) =>
-    next(),
+  apiRateLimiter: (_req: Request, _res: Response, next: NextFunction) => next(),
   authRateLimiter: (_req: Request, _res: Response, next: NextFunction) =>
     next(),
 }));

@@ -6,10 +6,9 @@ export const ACCESS_COOKIE = 'accessToken';
 export const REFRESH_COOKIE = 'refreshToken';
 export const CSRF_COOKIE = 'XSRF-TOKEN';
 
-const FIFTEEN_MINUTES_MS = 2 * 60 * 1000;
+const FIFTEEN_MINUTES_MS = 15 * 60 * 1000;
 const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
 
-// Cookie attributes shared by all auth cookies.
 const baseCookieOptions = {
   httpOnly: true,
   secure: isProduction,
@@ -17,8 +16,6 @@ const baseCookieOptions = {
   path: '/',
 };
 
-// CSRF token is intentionally NOT httpOnly because the SPA needs to
-// read it to echo it in a header. We still mark it secure + sameSite.
 const baseCsrfCookieOptions = {
   httpOnly: false,
   secure: isProduction,
@@ -26,8 +23,6 @@ const baseCsrfCookieOptions = {
   path: '/',
 };
 
-// Read the optional COOKIE_DOMAIN from env (typed loosely so we don't have
-// to expand the env schema for this single optional knob).
 const envRecord = process.env as Record<string, string | undefined>;
 const COOKIE_DOMAIN = envRecord.COOKIE_DOMAIN;
 
@@ -61,8 +56,6 @@ export const setAuthCookies = (
 export const clearAuthCookies = (res: Response) => {
   res.clearCookie(ACCESS_COOKIE, withDomain({ ...baseCookieOptions }));
   res.clearCookie(REFRESH_COOKIE, withDomain({ ...baseCookieOptions }));
-  // Clear the CSRF cookie too. Use a non-httpOnly config because the
-  // existing one was set without httpOnly.
   res.clearCookie(CSRF_COOKIE, withDomain({ ...baseCsrfCookieOptions }));
 };
 
@@ -72,14 +65,5 @@ export const ensureCsrfCookie = (res: Response) => {
   ];
   if (existing) return;
   const token = crypto.randomBytes(32).toString('hex');
-  res.cookie(
-    CSRF_COOKIE,
-    token,
-    withDomain({
-      ...baseCsrfCookieOptions,
-      // CSRF cookie should outlive the access token so the SPA always
-      // has a token to echo. We don't set maxAge to make it a session
-      // cookie that the browser clears when closed.
-    }),
-  );
+  res.cookie(CSRF_COOKIE, token, withDomain({ ...baseCsrfCookieOptions }));
 };

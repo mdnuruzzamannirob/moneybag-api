@@ -1,3 +1,4 @@
+/* eslint-disable no-empty */
 import { env } from '@/config/env.js';
 import bcrypt from 'bcrypt';
 import crypto from 'node:crypto';
@@ -73,8 +74,6 @@ const issueTokens = async (user: {
   return { accessToken, refreshToken };
 };
 
-// The shape we return to the controller / wire. We deliberately do NOT
-// include tokens in the body; the controller sets HTTP-only cookies.
 const publicUser = (user: {
   id: string;
   name: string;
@@ -114,18 +113,15 @@ export const register = async (input: {
 
   const tokens = await issueTokens(user);
 
-  // Best-effort welcome email. Failures are logged but do not block auth.
   try {
-    const text = `Hi ${user.name},\n\nWelcome to Expense Tracker! We're excited to have you on board.\n\nBest,\nThe Expense Tracker Team`
-    const html = `<p>Hi ${user.name},</p><p>Welcome to Expense Tracker! We're excited to have you on board.</p><p>Best,<br>The Expense Tracker Team</p>`
-    await sendMail(user.email, 'Welcome to Expense Tracker!', text, html)
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error('Failed to send welcome email:', error);
-  }
+    const text = `Hi ${user.name},\n\nWelcome to Expense Tracker! We're excited to have you on board.\n\nBest,\nThe Expense Tracker Team`;
+    const html = `<p>Hi ${user.name},</p><p>Welcome to Expense Tracker! We're excited to have you on board.</p><p>Best,<br>The Expense Tracker Team</p>`;
+    await sendMail(user.email, 'Welcome to Expense Tracker!', text, html);
 
-  return { user: publicUser(user), tokens }
-}
+  } catch {}
+
+  return { user: publicUser(user), tokens };
+};
 
 export const login = async (email: string, password: string) => {
   const user = await prisma.user.findUnique({ where: { email } });
@@ -138,21 +134,12 @@ export const login = async (email: string, password: string) => {
   return { user: publicUser(user), tokens };
 };
 
-/**
- * Rotates a refresh token.
- *   - The presented refresh token must exist, be unrevoked and unexpired.
- *   - It is then revoked (single-use).
- *   - A new (access, refresh) pair is issued.
- *   - On failure we revoke ALL refresh tokens for the user as a safety
- *     measure against token theft.
- */
 export const refresh = async (refreshToken: string) => {
   const stored = await prisma.refreshToken.findUnique({
     where: { token: refreshToken },
   });
   if (!stored || stored.revoked || stored.expiresAt < new Date()) {
     if (stored) {
-      // Revoke every refresh token for this user; a stolen token was used.
       await prisma.refreshToken.updateMany({
         where: { userId: stored.userId },
         data: { revoked: true },
@@ -165,7 +152,6 @@ export const refresh = async (refreshToken: string) => {
   try {
     payload = verifyRefreshToken(refreshToken);
   } catch {
-    // Signature invalid → revoke everything for this user.
     await prisma.refreshToken.updateMany({
       where: { userId: stored.userId },
       data: { revoked: true },
@@ -195,10 +181,6 @@ export const logout = async (refreshToken: string) => {
   });
 };
 
-/**
- * Revoke every refresh token for the user. Used when a password changes
- * or an admin forces a sign-out everywhere.
- */
 export const logoutAll = async (userId: string) => {
   await prisma.refreshToken.updateMany({
     where: { userId, revoked: false },
@@ -226,16 +208,14 @@ export const forgotPassword = async (email: string) => {
       userId: user.id,
       expiresAt: new Date(Date.now() + 60 * 60 * 1000),
     },
-  })
-  const resetUrl = `${env.CORS_ORIGIN}/reset-password?token=${resetToken}`
-  const text = `You are receiving this email because you (or someone else) have requested the reset of the password for your account.\nPlease click on the following link, or paste this into your browser to complete the process: ${resetUrl}\nThis link is valid for only 1 hour.\nIf you did not request this, please ignore this email and your password will remain unchanged.`
-  const html = `<p>You are receiving this email because you (or someone else) have requested the reset of the password for your account.</p><p>Please click on the following link to complete the process:</p><p><a href="${resetUrl}">${resetUrl}</a></p><p>This link is valid for only 1 hour.</p><p>If you did not request this, please ignore this email and your password will remain unchanged.</p>`
+  });
+  const resetUrl = `${env.CORS_ORIGIN}/reset-password?token=${resetToken}`;
+  const text = `You are receiving this email because you (or someone else) have requested the reset of the password for your account.\nPlease click on the following link, or paste this into your browser to complete the process: ${resetUrl}\nThis link is valid for only 1 hour.\nIf you did not request this, please ignore this email and your password will remain unchanged.`;
+  const html = `<p>You are receiving this email because you (or someone else) have requested the reset of the password for your account.</p><p>Please click on the following link to complete the process:</p><p><a href="${resetUrl}">${resetUrl}</a></p><p>This link is valid for only 1 hour.</p><p>If you did not request this, please ignore this email and your password will remain unchanged.</p>`;
 
   try {
     await sendMail(user.email, 'Expense Tracker - Password Reset', text, html);
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error('Failed to send reset email:', error);
+  } catch  {
   }
 };
 

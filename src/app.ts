@@ -45,8 +45,6 @@ app.use(
 app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-// CSRF must come after cookie-parser so it can read the XSRF-TOKEN
-// cookie, and after CORS because we depend on `credentials: true`.
 app.use(csrfProtection);
 app.use(apiRateLimiter);
 app.use(morgan(isProduction ? 'combined' : 'dev'));

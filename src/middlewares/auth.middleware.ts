@@ -21,8 +21,6 @@ export const authenticate = async (
   _res: Response,
   next: NextFunction,
 ) => {
-  // Prefer the HTTP-only cookie, but accept the Authorization header for
-  // backward compatibility (e.g. non-browser clients or tests).
   const header = req.headers.authorization;
   const headerToken = header?.startsWith('Bearer ')
     ? header.slice(7)
