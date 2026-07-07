@@ -6,7 +6,7 @@ export const createSavingsGoalSchema = z
       .object({
         title: z.string().min(1),
         targetAmount: z.number().positive(),
-        deadline: z.string().datetime(),
+        deadline: z.string().datetime({ offset: true }),
       })
       .strict(),
   })
