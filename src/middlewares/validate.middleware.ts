@@ -5,7 +5,7 @@ import { AppError } from '../utils/response.js';
 export const validate =
   (schema: ZodTypeAny) => (req: Request, res: Response, next: NextFunction) => {
     const parsed = schema.safeParse({
-      ...(Object.keys(req.body ?? {}).length ? { body: req.body } : {}),
+      body: req.body ?? {},
       ...(Object.keys(req.params ?? {}).length ? { params: req.params } : {}),
       ...(Object.keys(req.query ?? {}).length ? { query: req.query } : {}),
     });

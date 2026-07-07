@@ -1,5 +1,6 @@
 import type { NextFunction, Request, Response } from 'express';
 import { prisma } from '../config/db.js';
+import { ACCESS_COOKIE } from '../utils/cookies.js';
 import { verifyAccessToken } from '../utils/jwt.js';
 import { AppError } from '../utils/response.js';
 
@@ -20,8 +21,16 @@ export const authenticate = async (
   _res: Response,
   next: NextFunction,
 ) => {
+  // Prefer the HTTP-only cookie, but accept the Authorization header for
+  // backward compatibility (e.g. non-browser clients or tests).
   const header = req.headers.authorization;
-  const token = header?.startsWith('Bearer ') ? header.slice(7) : undefined;
+  const headerToken = header?.startsWith('Bearer ')
+    ? header.slice(7)
+    : undefined;
+  const cookieToken = (req.cookies as Record<string, string> | undefined)?.[
+    ACCESS_COOKIE
+  ];
+  const token = cookieToken || headerToken;
 
   if (!token) {
     return next(new AppError(401, 'Authentication token is required'));

@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { validate } from '../../middlewares/validate.middleware.js';
 import { authRateLimiter } from '../../middlewares/rateLimiter.js';
+import { authenticate } from '../../middlewares/auth.middleware.js';
 import * as controller from './controller.js';
 import {
   forgotPasswordSchema,
@@ -22,6 +23,7 @@ router.post(
 router.post('/login', authRateLimiter, validate(loginSchema), controller.login);
 router.post('/refresh', validate(refreshSchema), controller.refresh);
 router.post('/logout', validate(logoutSchema), controller.logout);
+router.get('/me', authenticate, controller.me);
 router.post(
   '/forgot-password',
   authRateLimiter,
