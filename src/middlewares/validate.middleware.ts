@@ -1,3 +1,4 @@
+import { sendResponse } from '@/utils/response.js';
 import type { NextFunction, Request, Response } from 'express';
 import type { ZodError, ZodTypeAny } from 'zod';
 
@@ -14,14 +15,17 @@ export const validate =
       const first = zodError.issues[0];
       const path = first?.path?.join('.') || 'input';
       const message = first ? `${path}: ${first.message}` : 'Validation failed';
-      return res.status(400).json({
-        success: false,
+      return sendResponse(
+        res,
+        400,
         message,
-        errors: zodError.issues.map((issue) => ({
+        undefined,
+        undefined,
+        zodError.issues.map((issue) => ({
           path: issue.path.join('.'),
           message: issue.message,
         })),
-      });
+      );
     }
     const data = parsed.data as Record<string, unknown>;
     if ('body' in data) req.body = data.body as Request['body'];
