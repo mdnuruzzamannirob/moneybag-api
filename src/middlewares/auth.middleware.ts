@@ -4,18 +4,6 @@ import { ACCESS_COOKIE } from '../utils/cookies.js';
 import { verifyAccessToken } from '../utils/jwt.js';
 import { AppError } from '../utils/response.js';
 
-declare global {
-  namespace Express {
-    interface Request {
-      user?: {
-        id: string;
-        email: string;
-        role: string;
-      };
-    }
-  }
-}
-
 export const authenticate = async (
   req: Request,
   _res: Response,
