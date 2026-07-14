@@ -2,7 +2,7 @@ import type { NextFunction, Request, Response } from 'express';
 import { CSRF_COOKIE, ensureCsrfCookie } from '../utils/cookies.js';
 import { AppError } from '../utils/response.js';
 
-const UNSAFE_METHODS = new Set(['POST', 'PUT', 'PATCH', 'DELETE'])
+const UNSAFE_METHODS = new Set(['POST', 'PUT', 'PATCH', 'DELETE']);
 
 const CSRF_SAFE_PREFIXES = [
   '/api/auth/login',
@@ -30,9 +30,7 @@ export const csrfProtection = (
     return next();
   }
 
-  const cookieToken = (req.cookies as Record<string, string> | undefined)?.[
-    CSRF_COOKIE
-  ];
+  const cookieToken = req.cookies?.[CSRF_COOKIE];
   const headerToken =
     (req.headers['x-xsrf-token'] as string | undefined) ??
     (req.headers['csrf-token'] as string | undefined);

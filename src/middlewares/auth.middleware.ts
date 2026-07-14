@@ -13,9 +13,7 @@ export const authenticate = async (
   const headerToken = header?.startsWith('Bearer ')
     ? header.slice(7)
     : undefined;
-  const cookieToken = (req.cookies as Record<string, string> | undefined)?.[
-    ACCESS_COOKIE
-  ];
+  const cookieToken = req.cookies?.[ACCESS_COOKIE];
   const token = cookieToken || headerToken;
 
   if (!token) {
