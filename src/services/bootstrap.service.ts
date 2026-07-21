@@ -10,9 +10,24 @@ const SYSTEM_CATEGORIES: ReadonlyArray<{
 }> = [
   { name: 'Salary', type: 'INCOME', icon: 'wallet', color: '#1f9d55' },
   { name: 'Freelance', type: 'INCOME', icon: 'briefcase', color: '#2563eb' },
+  { name: 'Investment', type: 'INCOME', icon: 'trending-up', color: '#059669' },
+  { name: 'Gift', type: 'INCOME', icon: 'gift', color: '#db2777' },
   { name: 'Food', type: 'EXPENSE', icon: 'utensils', color: '#f97316' },
   { name: 'Transport', type: 'EXPENSE', icon: 'car', color: '#7c3aed' },
   { name: 'Bills', type: 'EXPENSE', icon: 'receipt', color: '#dc2626' },
+  { name: 'Entertainment', type: 'EXPENSE', icon: 'tv', color: '#eab308' },
+  { name: 'Shopping', type: 'EXPENSE', icon: 'shopping-bag', color: '#0ea5e9' },
+  { name: 'Health', type: 'EXPENSE', icon: 'heart-pulse', color: '#ef4444' },
+  {
+    name: 'Education',
+    type: 'EXPENSE',
+    icon: 'graduation-cap',
+    color: '#8b5cf6',
+  },
+  { name: 'Subscription', type: 'EXPENSE', icon: 'repeat', color: '#14b8a6' },
+  { name: 'Rent', type: 'EXPENSE', icon: 'home', color: '#f59e0b' },
+  { name: 'Other', type: 'INCOME', icon: 'plus-circle', color: '#64748b' },
+  { name: 'Other', type: 'EXPENSE', icon: 'minus-circle', color: '#64748b' },
 ];
 
 const EMAIL_TEMPLATES = [

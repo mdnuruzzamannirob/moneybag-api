@@ -1,4 +1,6 @@
 import { prisma } from '../config/db.js';
+import { env } from '../config/env.js';
+import { stripe } from '../config/stripe.js';
 import type { Prisma } from '../generated/prisma/client.js';
 import { AppError } from '../utils/response.js';
 
@@ -84,24 +86,91 @@ const jsonLimits = (limits: PlanLimits) =>
   limits as unknown as Prisma.InputJsonValue;
 
 export const ensureDefaultPlans = async () => {
-  await Promise.all(
-    DEFAULT_PLANS.map((plan) =>
-      prisma.plan.upsert({
-        where: { slug: plan.slug },
-        update: {
+  // Check if Stripe is configured
+  const isStripeConfigured =
+    env.STRIPE_SECRET_KEY &&
+    env.STRIPE_SECRET_KEY !== 'sk_test_moneybag_not_configured';
+
+  for (const plan of DEFAULT_PLANS) {
+    let stripePriceId: string | null = null;
+
+    if (isStripeConfigured && plan.price !== '0.00') {
+      // Create or get Stripe product
+      const products = await stripe.products.list({
+        active: true,
+        limit: 100,
+      });
+
+      let product = products.data.find(
+        (p) => p.metadata?.planSlug === plan.slug,
+      );
+
+      if (!product) {
+        product = await stripe.products.create({
           name: plan.name,
           description: plan.description,
-          price: plan.price,
-          interval: plan.interval,
-          limits: jsonLimits(plan.limits),
-        },
-        create: {
-          ...plan,
-          limits: jsonLimits(plan.limits),
-        },
-      }),
-    ),
-  );
+          metadata: { planSlug: plan.slug },
+        });
+      }
+
+      // Create or get Stripe price
+      const prices = await stripe.prices.list({
+        product: product.id,
+        active: true,
+        limit: 100,
+      });
+
+      let price = prices.data.find(
+        (p) =>
+          p.unit_amount === Number(plan.price) * 100 &&
+          p.currency === 'usd' &&
+          ((plan.interval === 'monthly' && p.recurring?.interval === 'month') ||
+            (plan.interval === 'yearly' && p.recurring?.interval === 'year') ||
+            (plan.interval === 'lifetime' && !p.recurring)),
+      );
+
+      if (!price) {
+        if (plan.interval === 'lifetime') {
+          price = await stripe.prices.create({
+            product: product.id,
+            unit_amount: Number(plan.price) * 100,
+            currency: 'usd',
+            metadata: { planSlug: plan.slug },
+          });
+        } else {
+          price = await stripe.prices.create({
+            product: product.id,
+            unit_amount: Number(plan.price) * 100,
+            currency: 'usd',
+            recurring: {
+              interval: plan.interval === 'monthly' ? 'month' : 'year',
+            },
+            metadata: { planSlug: plan.slug },
+          });
+        }
+      }
+
+      stripePriceId = price.id;
+    }
+
+    // Upsert plan in database
+    await prisma.plan.upsert({
+      where: { slug: plan.slug },
+      update: {
+        name: plan.name,
+        description: plan.description,
+        price: plan.price,
+        interval: plan.interval,
+        limits: jsonLimits(plan.limits),
+        stripePriceId,
+      },
+      create: {
+        ...plan,
+        limits: jsonLimits(plan.limits),
+        stripePriceId,
+      },
+    });
+  }
 };
 
 const numberOrNull = (value: unknown, fallback: number | null) =>
@@ -121,9 +190,7 @@ export const parsePlanLimits = (value: Prisma.JsonValue): PlanLimits => {
     receiptUpload: limits.receiptUpload === true,
     familySharing: limits.familySharing === true,
     maxFamilyMembers:
-      typeof limits.maxFamilyMembers === 'number'
-        ? limits.maxFamilyMembers
-        : 0,
+      typeof limits.maxFamilyMembers === 'number' ? limits.maxFamilyMembers : 0,
     fullReports: limits.fullReports === true,
     maxStorageMb: numberOrNull(limits.maxStorageMb, 5),
   };
