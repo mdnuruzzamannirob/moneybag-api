@@ -1,7 +1,8 @@
-import { beforeEach, describe, expect, it } from '@jest/globals';
+import { beforeEach, describe, expect, it } from 'vitest';
 import request from 'supertest';
 import app from '../../src/app.js';
 import { prisma } from '../../src/config/db.js';
+import { readCookie } from '../helpers/auth.js';
 
 describe('Admin Module Integration Tests', () => {
   let userToken: string;
@@ -19,7 +20,7 @@ describe('Admin Module Integration Tests', () => {
         currency: 'USD',
       })
       .expect(201);
-    userToken = userRes.body.data.accessToken;
+    userToken = readCookie(userRes.headers['set-cookie'], 'accessToken')!;
     targetUserId = userRes.body.data.user.id;
 
     // Register admin user
@@ -32,7 +33,6 @@ describe('Admin Module Integration Tests', () => {
         currency: 'USD',
       })
       .expect(201);
-    adminToken = adminRes.body.data.accessToken;
     const adminId = adminRes.body.data.user.id;
 
     // Manually promote admin user in db
@@ -40,6 +40,11 @@ describe('Admin Module Integration Tests', () => {
       where: { id: adminId },
       data: { role: 'ADMIN' },
     });
+    const adminLogin = await request(app)
+      .post('/api/auth/login')
+      .send({ email: 'admin@example.com', password: 'password123' })
+      .expect(200);
+    adminToken = readCookie(adminLogin.headers['set-cookie'], 'accessToken')!;
   });
 
   it('should deny access to standard users', async () => {

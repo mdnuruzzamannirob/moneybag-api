@@ -1,8 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
   provider = "prisma-client"
   output   = "../src/generated/prisma"
@@ -12,38 +7,9 @@ datasource db {
   provider = "postgresql"
 }
 
-model User {
-  id            String    @id @default(uuid())
-  name          String
-  email         String    @unique
-  password      String
-  role          Role      @default(USER)
-  currency      String    @default("BDT")
-  isActive      Boolean   @default(true)
-  categories    Category[]
-  transactions  Transaction[]
-  budgets       Budget[]
-  savingsGoals  SavingsGoal[]
-  refreshTokens RefreshToken[]
-  passwordResetTokens PasswordResetToken[]
-  createdAt     DateTime  @default(now())
-}
-
 enum Role {
   USER
   ADMIN
-}
-
-model Category {
-  id           String   @id @default(uuid())
-  name         String
-  type         TxnType
-  icon         String?
-  color        String?
-  userId       String
-  user         User @relation(fields: [userId], references: [id])
-  transactions Transaction[]
-  budgets      Budget[]
 }
 
 enum TxnType {
@@ -51,59 +17,310 @@ enum TxnType {
   EXPENSE
 }
 
+enum RecurringRule {
+  DAILY
+  WEEKLY
+  MONTHLY
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  PAST_DUE
+  CANCELED
+  TRIALING
+  INCOMPLETE
+  LIFETIME
+}
+
+enum FamilyRole {
+  VIEWER
+  EDITOR
+}
+
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  REVOKED
+  EXPIRED
+}
+
+enum NotificationType {
+  BUDGET_ALERT
+  SUBSCRIPTION
+  SYSTEM
+}
+
+model User {
+  id                      String    @id @default(uuid()) @db.Uuid
+  name                    String
+  email                   String    @unique
+  passwordHash            String?   @map("password")
+  googleId                String?   @unique
+  avatarUrl               String?
+  currency                String    @default("USD")
+  theme                   String    @default("system")
+  notificationPreferences Json      @default("{\"emailBudgetAlerts\":true,\"inAppBudgetAlerts\":true,\"subscriptionEmails\":true}")
+  role                    Role      @default(USER)
+  isActive                Boolean   @default(true)
+  twoFactorEnabled        Boolean   @default(false)
+  twoFactorSecret         String?
+  trialEndsAt             DateTime? @db.Timestamptz(3)
+  stripeCustomerId        String?   @unique
+  lastLoginAt             DateTime? @db.Timestamptz(3)
+  createdAt               DateTime  @default(now()) @db.Timestamptz(3)
+  updatedAt               DateTime  @updatedAt @db.Timestamptz(3)
+
+  categories          Category[]
+  transactions        Transaction[]
+  budgets             Budget[]
+  savingsGoals        SavingsGoal[]
+  refreshTokens       RefreshToken[]
+  passwordResetTokens PasswordResetToken[]
+  subscription        Subscription?
+  ownedFamilyGroups   FamilyGroup[]
+  familyMemberships   FamilyMember[]
+  familyInvitations   FamilyInvitation[]   @relation("InvitedUser")
+  auditLogs           AuditLog[]
+  notifications       Notification[]
+}
+
+model Subscription {
+  id                   String             @id @default(uuid()) @db.Uuid
+  userId               String             @unique @db.Uuid
+  user                 User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  planId               String             @db.Uuid
+  plan                 Plan               @relation(fields: [planId], references: [id], onDelete: Restrict)
+  stripeSubscriptionId String?            @unique
+  status               SubscriptionStatus @default(TRIALING)
+  currentPeriodStart   DateTime           @default(now()) @db.Timestamptz(3)
+  currentPeriodEnd     DateTime?          @db.Timestamptz(3)
+  cancelAtPeriodEnd    Boolean            @default(false)
+  createdAt            DateTime           @default(now()) @db.Timestamptz(3)
+  updatedAt            DateTime           @updatedAt @db.Timestamptz(3)
+
+  @@index([planId, status])
+}
+
+model Plan {
+  id            String         @id @default(uuid()) @db.Uuid
+  name          String
+  slug          String         @unique
+  description   String?
+  price         Decimal        @db.Decimal(10, 2)
+  interval      String
+  limits        Json
+  stripePriceId String?        @unique
+  isActive      Boolean        @default(true)
+  createdAt     DateTime       @default(now()) @db.Timestamptz(3)
+  updatedAt     DateTime       @updatedAt @db.Timestamptz(3)
+  subscriptions Subscription[]
+}
+
+model Category {
+  id           String        @id @default(uuid()) @db.Uuid
+  userId       String?       @db.Uuid
+  user         User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name         String
+  type         TxnType
+  icon         String?
+  color        String?
+  createdAt    DateTime      @default(now()) @db.Timestamptz(3)
+  updatedAt    DateTime      @updatedAt @db.Timestamptz(3)
+  transactions Transaction[]
+  budgets      Budget[]
+
+  @@index([userId, type])
+}
+
 model Transaction {
-  id            String    @id @default(uuid())
-  amount        Float
-  type          TxnType
-  note          String?
-  date          DateTime
-  tags          String[]
-  receiptUrl    String?
-  isRecurring   Boolean   @default(false)
-  recurringRule String?   // e.g. "MONTHLY"
-  userId        String
-  categoryId    String
-  user          User @relation(fields: [userId], references: [id])
-  category      Category @relation(fields: [categoryId], references: [id])
-  createdAt     DateTime  @default(now())
+  id                   String                @id @default(uuid()) @db.Uuid
+  userId               String                @db.Uuid
+  user                 User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  categoryId           String                @db.Uuid
+  category             Category              @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  amount               Decimal               @db.Decimal(12, 2)
+  type                 TxnType
+  date                 DateTime              @db.Date
+  note                 String?               @db.VarChar(500)
+  tags                 String[]              @default([])
+  receiptUrl           String?
+  receiptPublicId      String?
+  isRecurring          Boolean               @default(false)
+  recurringRule        RecurringRule?
+  createdAt            DateTime              @default(now()) @db.Timestamptz(3)
+  updatedAt            DateTime              @updatedAt @db.Timestamptz(3)
+  recurringOccurrences RecurringOccurrence[]
+
+  @@index([userId, date])
+  @@index([userId, type, date])
+  @@index([categoryId])
+}
+
+model RecurringOccurrence {
+  id                  String      @id @default(uuid()) @db.Uuid
+  sourceTransactionId String      @db.Uuid
+  sourceTransaction   Transaction @relation(fields: [sourceTransactionId], references: [id], onDelete: Cascade)
+  occurrenceDate      DateTime    @db.Date
+  createdAt           DateTime    @default(now()) @db.Timestamptz(3)
+
+  @@unique([sourceTransactionId, occurrenceDate])
 }
 
 model Budget {
-  id             String @id @default(uuid())
-  limit          Float
-  alertThreshold Int    @default(80) // percentage
+  id             String    @id @default(uuid()) @db.Uuid
+  userId         String    @db.Uuid
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  categoryId     String?   @db.Uuid
+  category       Category? @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  limit          Decimal   @db.Decimal(12, 2)
+  alertThreshold Int       @default(80)
   month          Int
   year           Int
-  userId         String
-  categoryId     String
-  user           User @relation(fields: [userId], references: [id])
-  category       Category @relation(fields: [categoryId], references: [id])
+  rollover       Boolean   @default(false)
+  createdAt      DateTime  @default(now()) @db.Timestamptz(3)
+  updatedAt      DateTime  @updatedAt @db.Timestamptz(3)
+
+  @@index([userId, year, month])
 }
 
 model SavingsGoal {
-  id            String   @id @default(uuid())
+  id            String                @id @default(uuid()) @db.Uuid
+  userId        String                @db.Uuid
+  user          User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
   title         String
-  targetAmount  Float
-  currentAmount Float    @default(0)
-  deadline      DateTime
-  userId        String
-  user          User @relation(fields: [userId], references: [id])
+  targetAmount  Decimal               @db.Decimal(12, 2)
+  currentAmount Decimal               @default(0) @db.Decimal(12, 2)
+  deadline      DateTime              @db.Date
+  createdAt     DateTime              @default(now()) @db.Timestamptz(3)
+  updatedAt     DateTime              @updatedAt @db.Timestamptz(3)
+  contributions SavingsContribution[]
+
+  @@index([userId, deadline])
+}
+
+model SavingsContribution {
+  id        String      @id @default(uuid()) @db.Uuid
+  goalId    String      @db.Uuid
+  goal      SavingsGoal @relation(fields: [goalId], references: [id], onDelete: Cascade)
+  amount    Decimal     @db.Decimal(12, 2)
+  date      DateTime    @db.Date
+  note      String?
+  createdAt DateTime    @default(now()) @db.Timestamptz(3)
+
+  @@index([goalId, date])
+}
+
+model FamilyGroup {
+  id          String             @id @default(uuid()) @db.Uuid
+  ownerId     String             @db.Uuid
+  owner       User               @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  name        String
+  members     FamilyMember[]
+  invitations FamilyInvitation[]
+  createdAt   DateTime           @default(now()) @db.Timestamptz(3)
+  updatedAt   DateTime           @updatedAt @db.Timestamptz(3)
+
+  @@index([ownerId])
+}
+
+model FamilyMember {
+  id        String      @id @default(uuid()) @db.Uuid
+  groupId   String      @db.Uuid
+  group     FamilyGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  userId    String      @db.Uuid
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role      FamilyRole  @default(VIEWER)
+  createdAt DateTime    @default(now()) @db.Timestamptz(3)
+
+  @@unique([groupId, userId])
+  @@index([userId])
+}
+
+model FamilyInvitation {
+  id            String           @id @default(uuid()) @db.Uuid
+  groupId       String           @db.Uuid
+  group         FamilyGroup      @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  email         String
+  invitedUserId String?          @db.Uuid
+  invitedUser   User?            @relation("InvitedUser", fields: [invitedUserId], references: [id], onDelete: SetNull)
+  role          FamilyRole       @default(VIEWER)
+  token         String           @unique
+  status        InvitationStatus @default(PENDING)
+  expiresAt     DateTime         @db.Timestamptz(3)
+  acceptedAt    DateTime?        @db.Timestamptz(3)
+  createdAt     DateTime         @default(now()) @db.Timestamptz(3)
+
+  @@index([groupId, email, status])
 }
 
 model RefreshToken {
-  id        String   @id @default(uuid())
+  id        String   @id @default(uuid()) @db.Uuid
   token     String   @unique
-  userId    String
-  user      User @relation(fields: [userId], references: [id])
-  expiresAt DateTime
+  userId    String   @db.Uuid
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime @db.Timestamptz(3)
   revoked   Boolean  @default(false)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+
+  @@index([userId, revoked])
 }
 
 model PasswordResetToken {
-  id        String   @id @default(uuid())
+  id        String   @id @default(uuid()) @db.Uuid
   token     String   @unique
-  userId    String
+  userId    String   @db.Uuid
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  expiresAt DateTime
+  expiresAt DateTime @db.Timestamptz(3)
   used      Boolean  @default(false)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+}
+
+model AuditLog {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String?  @db.Uuid
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  action    String
+  details   Json?
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+
+  @@index([userId, action, createdAt])
+}
+
+model EmailTemplate {
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String   @unique
+  subject   String
+  body      String   @db.Text
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+}
+
+model GlobalSetting {
+  key       String   @id
+  value     Json
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+}
+
+model Notification {
+  id        String           @id @default(uuid()) @db.Uuid
+  userId    String           @db.Uuid
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      NotificationType
+  title     String
+  message   String
+  data      Json?
+  readAt    DateTime?        @db.Timestamptz(3)
+  dedupeKey String?          @unique
+  createdAt DateTime         @default(now()) @db.Timestamptz(3)
+
+  @@index([userId, readAt, createdAt])
+}
+
+model StripeWebhookEvent {
+  id            String   @id @default(uuid()) @db.Uuid
+  stripeEventId String   @unique
+  type          String
+  processedAt   DateTime @default(now()) @db.Timestamptz(3)
 }

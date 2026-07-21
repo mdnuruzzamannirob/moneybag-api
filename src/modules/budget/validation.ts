@@ -1,35 +1,36 @@
 import { z } from 'zod';
 
-export const createBudgetSchema = z
+const budgetBody = z
   .object({
-    body: z
-      .object({
-        limit: z.coerce.number().positive(),
-        alertThreshold: z.coerce.number().int().min(1).max(100).default(80),
-        month: z.coerce.number().int().min(1).max(12),
-        year: z.number().int().min(1970),
-        categoryId: z.string().uuid(),
-      })
-      .strict(),
+    limit: z.coerce.number().finite().positive().max(9_999_999_999.99),
+    alertThreshold: z.coerce.number().int().min(1).max(100).default(80),
+    month: z.coerce.number().int().min(1).max(12),
+    year: z.coerce.number().int().min(1970).max(3000),
+    categoryId: z.string().uuid().nullable().optional(),
+    rollover: z.boolean().default(false),
   })
-  .passthrough();
+  .strict();
 
-export const listBudgetSchema = z
-  .object({
-    query: z
-      .object({
-        month: z.coerce.number().int().min(1).max(12).optional(),
-        year: z.coerce.number().int().min(1970).optional(),
-        page: z.coerce.number().int().positive().default(1),
-        limit: z.coerce.number().int().positive().max(100).default(20),
-      })
-      .strict(),
-  })
-  .passthrough();
+export const createBudgetSchema = z.object({ body: budgetBody });
 
-export const updateBudgetSchema = z
-  .object({
-    params: z.object({ id: z.string().uuid() }),
-    body: createBudgetSchema.shape.body.partial(),
-  })
-  .passthrough();
+export const listBudgetSchema = z.object({
+  query: z
+    .object({
+      month: z.coerce.number().int().min(1).max(12).optional(),
+      year: z.coerce.number().int().min(1970).max(3000).optional(),
+      page: z.coerce.number().int().positive().default(1),
+      limit: z.coerce.number().int().positive().max(100).default(20),
+    })
+    .strict(),
+});
+
+export const updateBudgetSchema = z.object({
+  params: z.object({ id: z.string().uuid() }).strict(),
+  body: budgetBody
+    .partial()
+    .refine((value) => Object.keys(value).length > 0, 'No changes supplied'),
+});
+
+export const budgetIdSchema = z.object({
+  params: z.object({ id: z.string().uuid() }).strict(),
+});

@@ -7,6 +7,7 @@ declare global {
         id: string;
         email: string;
         role: string;
+        impersonatedBy?: string;
       };
       cookies: Record<string, string>;
     }

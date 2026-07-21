@@ -1,22 +1,25 @@
-import { afterAll, beforeAll, beforeEach, expect, jest } from '@jest/globals';
+import { afterAll, beforeAll, beforeEach, expect, vi } from 'vitest';
 import { config as loadEnv } from 'dotenv';
 import type { NextFunction, Request, Response } from 'express';
 
-loadEnv({ path: '.env.test' });
-loadEnv({ path: '.env', override: false });
+loadEnv({ path: '.env.test', quiet: true });
+loadEnv({ path: '.env', override: false, quiet: true });
 
 process.env.NODE_ENV = 'test';
 process.env.PORT ??= '5001';
 process.env.REDIS_URL ??= 'redis://localhost:6379';
 
-jest.mock('../src/middlewares/rateLimiter.js', () => ({
+vi.mock('../src/middlewares/rateLimiter.js', () => ({
   apiRateLimiter: (_req: Request, _res: Response, next: NextFunction) => next(),
   authRateLimiter: (_req: Request, _res: Response, next: NextFunction) =>
     next(),
 }));
 
-jest.mock('../src/utils/mailer.js', () => ({
-  sendMail: jest.fn<() => Promise<void>>().mockResolvedValue(undefined as void),
+vi.mock('../src/utils/mailer.js', () => ({
+  sendMail: vi.fn<() => Promise<void>>().mockResolvedValue(undefined as void),
+  sendTemplateMail: vi
+    .fn<() => Promise<void>>()
+    .mockResolvedValue(undefined as void),
 }));
 
 let prismaAvailable = false;
@@ -26,7 +29,7 @@ let redis: typeof import('../src/config/redis.js').redis | undefined;
 
 const isIntegrationTest = () => {
   const testPath = expect.getState().testPath ?? '';
-  return testPath.includes('/integration/');
+  return /[\\/]integration[\\/]/.test(testPath);
 };
 
 beforeAll(async () => {
@@ -91,12 +94,11 @@ beforeEach(async () => {
         WHERE schemaname = 'public' AND tablename != '_prisma_migrations';
       `;
 
-      for (const { tablename } of tablenames) {
-        if (tablename) {
-          await prisma.$executeRawUnsafe(
-            `TRUNCATE TABLE "public"."${tablename}" CASCADE;`,
-          );
-        }
+      const quoted = tablenames
+        .map(({ tablename }) => `"public"."${tablename.replaceAll('"', '""')}"`)
+        .join(', ');
+      if (quoted) {
+        await prisma.$executeRawUnsafe(`TRUNCATE TABLE ${quoted} CASCADE;`);
       }
     } catch (err) {
       console.error('Failed to truncate tables:', err);

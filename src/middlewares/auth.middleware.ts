@@ -14,7 +14,7 @@ export const authenticate = async (
     ? header.slice(7)
     : undefined;
   const cookieToken = req.cookies?.[ACCESS_COOKIE];
-  const token = cookieToken || headerToken;
+  const token = headerToken || cookieToken;
 
   if (!token) {
     return next(new AppError(401, 'Authentication token is required'));
@@ -31,7 +31,12 @@ export const authenticate = async (
       return next(new AppError(401, 'User is inactive or no longer exists'));
     }
 
-    req.user = { id: user.id, email: user.email, role: user.role };
+    req.user = {
+      id: user.id,
+      email: user.email,
+      role: user.role,
+      impersonatedBy: payload.impersonatedBy,
+    };
     next();
   } catch {
     next(new AppError(401, 'Invalid or expired authentication token'));
