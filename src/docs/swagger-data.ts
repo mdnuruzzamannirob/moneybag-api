@@ -149,6 +149,42 @@ const apiErrorResponse = (_status: number, message: string) => ({
   },
 });
 
+const uuidPathParameter = (name = 'id') => ({
+  name,
+  in: 'path',
+  required: true,
+  schema: { type: 'string', format: 'uuid' },
+});
+
+const jsonRequestBody = (
+  required: string[],
+  properties: Record<string, SchemaObject>,
+) => ({
+  required: true,
+  content: {
+    'application/json': {
+      schema: {
+        type: 'object',
+        required,
+        properties,
+      },
+    },
+  },
+});
+
+const fileRequestBody = (fieldName: string) => ({
+  required: true,
+  content: {
+    'multipart/form-data': {
+      schema: {
+        type: 'object',
+        required: [fieldName],
+        properties: { [fieldName]: { type: 'string', format: 'binary' } },
+      },
+    },
+  },
+});
+
 const openApiSpec: OpenApiDocument = {
   openapi: '3.0.0',
   info: {
@@ -170,6 +206,10 @@ const openApiSpec: OpenApiDocument = {
     { name: 'Budgets' },
     { name: 'Savings Goals' },
     { name: 'Reports' },
+    { name: 'Dashboard' },
+    { name: 'Family' },
+    { name: 'Notifications' },
+    { name: 'Billing' },
     { name: 'Admin' },
   ],
   components: {
@@ -400,6 +440,28 @@ const openApiSpec: OpenApiDocument = {
         responses: { '200': okResponse('Token refreshed') },
       },
     },
+    '/auth/google': {
+      post: {
+        tags: ['Auth'],
+        security: [],
+        summary: 'Login or register with Google',
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                required: ['idToken'],
+                properties: {
+                  idToken: { type: 'string', example: 'google-id-token' },
+                },
+              },
+            },
+          },
+        },
+        responses: { '200': okResponse('Google authentication successful') },
+      },
+    },
     '/auth/logout': {
       post: {
         tags: ['Auth'],
@@ -475,6 +537,13 @@ const openApiSpec: OpenApiDocument = {
         responses: { '200': okResponse('Password reset successfully') },
       },
     },
+    '/auth/me': {
+      get: {
+        tags: ['Auth'],
+        summary: 'Get authenticated auth session profile',
+        responses: { '200': okResponse('Authenticated user fetched') },
+      },
+    },
     '/users/me': {
       get: {
         tags: ['Users'],
@@ -516,6 +585,25 @@ const openApiSpec: OpenApiDocument = {
         },
         responses: { '200': okResponse('Profile updated') },
       },
+      delete: {
+        tags: ['Users'],
+        summary: 'Delete current account',
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                required: ['password'],
+                properties: {
+                  password: { type: 'string', example: 'Password123!' },
+                },
+              },
+            },
+          },
+        },
+        responses: { '200': okResponse('Account deleted') },
+      },
     },
     '/users/me/password': {
       patch: {
@@ -541,6 +629,20 @@ const openApiSpec: OpenApiDocument = {
           },
         },
         responses: { '200': okResponse('Password changed') },
+      },
+    },
+    '/users/me/export': {
+      get: {
+        tags: ['Users'],
+        summary: 'Export current user data',
+        parameters: [
+          {
+            name: 'format',
+            in: 'query',
+            schema: { type: 'string', enum: ['json', 'csv'], default: 'json' },
+          },
+        ],
+        responses: { '200': okResponse('User data exported') },
       },
     },
     '/categories': {
@@ -782,6 +884,15 @@ const openApiSpec: OpenApiDocument = {
         responses: { '201': okResponse('Transactions imported') },
       },
     },
+    '/transactions/{id}/receipt': {
+      post: {
+        tags: ['Transactions'],
+        summary: 'Attach receipt image to transaction',
+        parameters: [uuidPathParameter()],
+        requestBody: fileRequestBody('receipt'),
+        responses: { '200': okResponse('Receipt attached') },
+      },
+    },
     '/transactions/{id}': {
       patch: {
         tags: ['Transactions'],
@@ -923,6 +1034,12 @@ const openApiSpec: OpenApiDocument = {
         },
         responses: { '200': okResponse('Budget updated') },
       },
+      delete: {
+        tags: ['Budgets'],
+        summary: 'Delete budget',
+        parameters: [uuidPathParameter()],
+        responses: { '200': okResponse('Budget deleted') },
+      },
     },
     '/savings-goals': {
       get: {
@@ -1005,6 +1122,17 @@ const openApiSpec: OpenApiDocument = {
           },
         ],
         responses: { '200': okResponse('Savings goal deleted') },
+      },
+    },
+    '/dashboard': {
+      get: {
+        tags: ['Dashboard'],
+        summary: 'Get dashboard summary',
+        parameters: [
+          { name: 'month', in: 'query', schema: { type: 'integer' } },
+          { name: 'year', in: 'query', schema: { type: 'integer' } },
+        ],
+        responses: { '200': okResponse('Dashboard fetched') },
       },
     },
     '/reports/monthly': {
@@ -1125,6 +1253,153 @@ const openApiSpec: OpenApiDocument = {
         responses: { '200': okResponse('Report exported') },
       },
     },
+    '/family/groups': {
+      get: {
+        tags: ['Family'],
+        summary: 'List family groups',
+        parameters: [
+          { name: 'page', in: 'query', schema: { type: 'integer', default: 1 } },
+          { name: 'limit', in: 'query', schema: { type: 'integer', default: 20 } },
+        ],
+        responses: { '200': okResponse('Family groups fetched') },
+      },
+      post: {
+        tags: ['Family'],
+        summary: 'Create family group',
+        requestBody: jsonRequestBody(['name'], {
+          name: { type: 'string', example: 'Home' },
+        }),
+        responses: { '201': okResponse('Family group created') },
+      },
+    },
+    '/family/groups/{id}/invite': {
+      post: {
+        tags: ['Family'],
+        summary: 'Invite member to family group',
+        parameters: [uuidPathParameter()],
+        requestBody: jsonRequestBody(['email'], {
+          email: { type: 'string', format: 'email' },
+          role: { type: 'string', enum: ['MEMBER', 'ADMIN'], example: 'MEMBER' },
+        }),
+        responses: { '201': okResponse('Invitation sent') },
+      },
+    },
+    '/family/invitations/{token}/accept': {
+      post: {
+        tags: ['Family'],
+        summary: 'Accept family invitation',
+        parameters: [
+          {
+            name: 'token',
+            in: 'path',
+            required: true,
+            schema: { type: 'string', example: 'invitation-token' },
+          },
+        ],
+        responses: { '200': okResponse('Invitation accepted') },
+      },
+    },
+    '/family/groups/{id}/members/{userId}': {
+      delete: {
+        tags: ['Family'],
+        summary: 'Remove member from family group',
+        parameters: [uuidPathParameter(), uuidPathParameter('userId')],
+        responses: { '200': okResponse('Member removed') },
+      },
+    },
+    '/family/groups/{id}/transactions': {
+      get: {
+        tags: ['Family'],
+        summary: 'List family group transactions',
+        parameters: [
+          uuidPathParameter(),
+          { name: 'from', in: 'query', schema: { type: 'string', format: 'date-time' } },
+          { name: 'to', in: 'query', schema: { type: 'string', format: 'date-time' } },
+          { name: 'page', in: 'query', schema: { type: 'integer', default: 1 } },
+          { name: 'limit', in: 'query', schema: { type: 'integer', default: 20 } },
+        ],
+        responses: { '200': okResponse('Family transactions fetched') },
+      },
+    },
+    '/notifications': {
+      get: {
+        tags: ['Notifications'],
+        summary: 'List notifications',
+        parameters: [
+          { name: 'isRead', in: 'query', schema: { type: 'boolean' } },
+          { name: 'page', in: 'query', schema: { type: 'integer', default: 1 } },
+          { name: 'limit', in: 'query', schema: { type: 'integer', default: 20 } },
+        ],
+        responses: { '200': okResponse('Notifications fetched') },
+      },
+    },
+    '/notifications/unread-count': {
+      get: {
+        tags: ['Notifications'],
+        summary: 'Get unread notification count',
+        responses: { '200': okResponse('Unread count fetched') },
+      },
+    },
+    '/notifications/read-all': {
+      patch: {
+        tags: ['Notifications'],
+        summary: 'Mark all notifications as read',
+        responses: { '200': okResponse('Notifications marked as read') },
+      },
+    },
+    '/notifications/{id}/read': {
+      patch: {
+        tags: ['Notifications'],
+        summary: 'Mark notification as read',
+        parameters: [uuidPathParameter()],
+        responses: { '200': okResponse('Notification marked as read') },
+      },
+    },
+    '/billing/webhook': {
+      post: {
+        tags: ['Billing'],
+        security: [],
+        summary: 'Stripe billing webhook',
+        requestBody: {
+          required: true,
+          content: { 'application/json': { schema: { type: 'object' } } },
+        },
+        responses: { '200': okResponse('Webhook processed') },
+      },
+    },
+    '/billing/plans': {
+      get: {
+        tags: ['Billing'],
+        summary: 'List billing plans',
+        responses: { '200': okResponse('Billing plans fetched') },
+      },
+    },
+    '/billing/subscription': {
+      get: {
+        tags: ['Billing'],
+        summary: 'Get current subscription',
+        responses: { '200': okResponse('Subscription fetched') },
+      },
+    },
+    '/billing/checkout': {
+      post: {
+        tags: ['Billing'],
+        summary: 'Create Stripe checkout session',
+        requestBody: jsonRequestBody(['planId'], {
+          planId: { type: 'string', format: 'uuid' },
+          successUrl: { type: 'string', example: 'http://localhost:3000/billing/success' },
+          cancelUrl: { type: 'string', example: 'http://localhost:3000/billing/cancel' },
+        }),
+        responses: { '200': okResponse('Checkout session created') },
+      },
+    },
+    '/billing/portal': {
+      post: {
+        tags: ['Billing'],
+        summary: 'Create Stripe customer portal session',
+        responses: { '200': okResponse('Portal session created') },
+      },
+    },
     '/admin/users': {
       get: {
         tags: ['Admin'],
@@ -1154,6 +1429,14 @@ const openApiSpec: OpenApiDocument = {
         responses: { '200': okResponse('Users fetched') },
       },
     },
+    '/admin/users/{id}': {
+      get: {
+        tags: ['Admin'],
+        summary: 'Get admin user detail',
+        parameters: [uuidPathParameter()],
+        responses: { '200': okResponse('User detail fetched') },
+      },
+    },
     '/admin/users/{id}/status': {
       patch: {
         tags: ['Admin'],
@@ -1179,6 +1462,206 @@ const openApiSpec: OpenApiDocument = {
           },
         },
         responses: { '200': okResponse('User status updated') },
+      },
+    },
+    '/admin/users/{id}/impersonate': {
+      post: {
+        tags: ['Admin'],
+        summary: 'Create impersonation token for user',
+        parameters: [uuidPathParameter()],
+        responses: { '200': okResponse('Impersonation token created') },
+      },
+    },
+    '/admin/users/{id}/plan': {
+      patch: {
+        tags: ['Admin'],
+        summary: 'Assign plan to user',
+        parameters: [uuidPathParameter()],
+        requestBody: jsonRequestBody(['planId'], {
+          planId: { type: 'string', format: 'uuid' },
+        }),
+        responses: { '200': okResponse('User plan assigned') },
+      },
+    },
+    '/admin/subscriptions': {
+      get: {
+        tags: ['Admin'],
+        summary: 'List subscriptions',
+        parameters: [
+          { name: 'status', in: 'query', schema: { type: 'string' } },
+          { name: 'page', in: 'query', schema: { type: 'integer', default: 1 } },
+          { name: 'limit', in: 'query', schema: { type: 'integer', default: 20 } },
+        ],
+        responses: { '200': okResponse('Subscriptions fetched') },
+      },
+    },
+    '/admin/subscriptions/{id}/refund': {
+      post: {
+        tags: ['Admin'],
+        summary: 'Refund subscription payment',
+        parameters: [uuidPathParameter()],
+        requestBody: jsonRequestBody([], {
+          amount: { type: 'number', example: 10 },
+          reason: { type: 'string', example: 'requested_by_customer' },
+        }),
+        responses: { '200': okResponse('Subscription refunded') },
+      },
+    },
+    '/admin/subscriptions/{id}/cancel': {
+      post: {
+        tags: ['Admin'],
+        summary: 'Cancel subscription',
+        parameters: [uuidPathParameter()],
+        requestBody: jsonRequestBody([], {
+          reason: { type: 'string', example: 'Admin cancellation' },
+        }),
+        responses: { '200': okResponse('Subscription cancelled') },
+      },
+    },
+    '/admin/subscriptions/{id}/reactivate': {
+      post: {
+        tags: ['Admin'],
+        summary: 'Reactivate subscription',
+        parameters: [uuidPathParameter()],
+        responses: { '200': okResponse('Subscription reactivated') },
+      },
+    },
+    '/admin/plans': {
+      get: {
+        tags: ['Admin'],
+        summary: 'List plans',
+        parameters: [
+          { name: 'includeArchived', in: 'query', schema: { type: 'boolean', default: false } },
+        ],
+        responses: { '200': okResponse('Plans fetched') },
+      },
+      post: {
+        tags: ['Admin'],
+        summary: 'Create plan',
+        requestBody: jsonRequestBody(['name', 'price', 'billingInterval'], {
+          name: { type: 'string', example: 'Pro' },
+          price: { type: 'number', example: 9.99 },
+          billingInterval: { type: 'string', enum: ['MONTHLY', 'YEARLY'] },
+          features: { type: 'array', items: { type: 'string' } },
+          stripePriceId: { type: 'string', example: 'price_123' },
+        }),
+        responses: { '201': okResponse('Plan created') },
+      },
+    },
+    '/admin/plans/{id}': {
+      patch: {
+        tags: ['Admin'],
+        summary: 'Update plan',
+        parameters: [uuidPathParameter()],
+        requestBody: jsonRequestBody([], {
+          name: { type: 'string', example: 'Pro' },
+          price: { type: 'number', example: 9.99 },
+          billingInterval: { type: 'string', enum: ['MONTHLY', 'YEARLY'] },
+          features: { type: 'array', items: { type: 'string' } },
+          isActive: { type: 'boolean', example: true },
+        }),
+        responses: { '200': okResponse('Plan updated') },
+      },
+      delete: {
+        tags: ['Admin'],
+        summary: 'Archive plan',
+        parameters: [uuidPathParameter()],
+        responses: { '200': okResponse('Plan archived') },
+      },
+    },
+    '/admin/categories': {
+      get: {
+        tags: ['Admin'],
+        summary: 'List global categories',
+        parameters: [
+          { name: 'type', in: 'query', schema: { type: 'string', enum: ['INCOME', 'EXPENSE'] } },
+          { name: 'search', in: 'query', schema: { type: 'string' } },
+        ],
+        responses: { '200': okResponse('Global categories fetched') },
+      },
+      post: {
+        tags: ['Admin'],
+        summary: 'Create global category',
+        requestBody: jsonRequestBody(['name', 'type'], {
+          name: { type: 'string', example: 'Food' },
+          type: { type: 'string', enum: ['INCOME', 'EXPENSE'] },
+          icon: { type: 'string', example: 'utensils' },
+          color: { type: 'string', example: '#f97316' },
+        }),
+        responses: { '201': okResponse('Global category created') },
+      },
+    },
+    '/admin/categories/{id}': {
+      patch: {
+        tags: ['Admin'],
+        summary: 'Update global category',
+        parameters: [uuidPathParameter()],
+        requestBody: jsonRequestBody([], {
+          name: { type: 'string', example: 'Food' },
+          type: { type: 'string', enum: ['INCOME', 'EXPENSE'] },
+          icon: { type: 'string', example: 'utensils' },
+          color: { type: 'string', example: '#f97316' },
+        }),
+        responses: { '200': okResponse('Global category updated') },
+      },
+      delete: {
+        tags: ['Admin'],
+        summary: 'Delete global category',
+        parameters: [uuidPathParameter()],
+        responses: { '200': okResponse('Global category deleted') },
+      },
+    },
+    '/admin/logs': {
+      get: {
+        tags: ['Admin'],
+        summary: 'List audit logs',
+        parameters: [
+          { name: 'action', in: 'query', schema: { type: 'string' } },
+          { name: 'actorId', in: 'query', schema: { type: 'string', format: 'uuid' } },
+          { name: 'page', in: 'query', schema: { type: 'integer', default: 1 } },
+          { name: 'limit', in: 'query', schema: { type: 'integer', default: 20 } },
+        ],
+        responses: { '200': okResponse('Audit logs fetched') },
+      },
+    },
+    '/admin/email-templates': {
+      get: {
+        tags: ['Admin'],
+        summary: 'List email templates',
+        parameters: [
+          { name: 'search', in: 'query', schema: { type: 'string' } },
+        ],
+        responses: { '200': okResponse('Email templates fetched') },
+      },
+    },
+    '/admin/email-templates/{id}': {
+      patch: {
+        tags: ['Admin'],
+        summary: 'Update email template',
+        parameters: [uuidPathParameter()],
+        requestBody: jsonRequestBody([], {
+          subject: { type: 'string', example: 'Welcome to Expense Tracker' },
+          body: { type: 'string', example: '<p>Hello {{name}}</p>' },
+          isActive: { type: 'boolean', example: true },
+        }),
+        responses: { '200': okResponse('Email template updated') },
+      },
+    },
+    '/admin/settings': {
+      get: {
+        tags: ['Admin'],
+        summary: 'Get platform settings',
+        responses: { '200': okResponse('Settings fetched') },
+      },
+      patch: {
+        tags: ['Admin'],
+        summary: 'Update platform settings',
+        requestBody: jsonRequestBody([], {
+          maintenanceMode: { type: 'boolean', example: false },
+          allowRegistration: { type: 'boolean', example: true },
+          defaultCurrency: { type: 'string', example: 'BDT' },
+        }),
+        responses: { '200': okResponse('Settings updated') },
       },
     },
     '/admin/stats': {
@@ -1220,7 +1703,8 @@ for (const [path, pathItem] of Object.entries(
       method !== 'get' ||
       Boolean((operation as Record<string, unknown>).requestBody) ||
       Boolean((operation as Record<string, unknown>).parameters);
-    const isPublicAuthRoute = path.startsWith('/auth');
+    const isPublicRoute =
+      Array.isArray(operation.security) && operation.security.length === 0;
     const isAdminRoute = path.startsWith('/admin');
 
     const injected: Record<string, unknown> = {
@@ -1231,7 +1715,7 @@ for (const [path, pathItem] of Object.entries(
       injected[400] = apiErrorResponse(400, 'Validation failed');
     }
 
-    if (!isPublicAuthRoute) {
+    if (!isPublicRoute) {
       injected[401] = apiErrorResponse(401, 'Authentication token is required');
     }
 

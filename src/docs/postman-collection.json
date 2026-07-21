@@ -277,6 +277,75 @@
           ]
         },
         {
+          "name": "/auth/google",
+          "item": [
+            {
+              "name": "Login or register with Google",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/auth/google",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "google"
+                  ],
+                  "query": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"idToken\": \"google-id-token\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "description": "Login or register with Google"
+              },
+              "response": [
+                {
+                  "name": "200 Google authentication successful",
+                  "originalRequest": {},
+                  "status": "Google authentication successful",
+                  "code": 200,
+                  "header": [],
+                  "body": "{\n  \"success\": true,\n  \"message\": \"Google authentication successful\",\n  \"data\": null\n}"
+                },
+                {
+                  "name": "400 Validation failed",
+                  "originalRequest": {},
+                  "status": "Validation failed",
+                  "code": 400,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\"\n}"
+                },
+                {
+                  "name": "500 Internal server error",
+                  "originalRequest": {},
+                  "status": "Internal server error",
+                  "code": 500,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Internal server error\"\n}"
+                }
+              ]
+            }
+          ]
+        },
+        {
           "name": "/auth/logout",
           "item": [
             {
@@ -482,6 +551,72 @@
               ]
             }
           ]
+        },
+        {
+          "name": "/auth/me",
+          "item": [
+            {
+              "name": "Get authenticated auth session profile",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/auth/me",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "me"
+                  ],
+                  "query": []
+                },
+                "description": "Get authenticated auth session profile",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{accessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "200 Authenticated user fetched",
+                  "originalRequest": {},
+                  "status": "Authenticated user fetched",
+                  "code": 200,
+                  "header": [],
+                  "body": "{\n  \"success\": true,\n  \"message\": \"Authenticated user fetched\",\n  \"data\": null\n}"
+                },
+                {
+                  "name": "401 Authentication token is required",
+                  "originalRequest": {},
+                  "status": "Authentication token is required",
+                  "code": 401,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Authentication token is required\"\n}"
+                },
+                {
+                  "name": "500 Internal server error",
+                  "originalRequest": {},
+                  "status": "Internal server error",
+                  "code": 500,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Internal server error\"\n}"
+                }
+              ]
+            }
+          ]
         }
       ]
     },
@@ -633,6 +768,88 @@
                   "body": "{\n  \"success\": false,\n  \"message\": \"Internal server error\"\n}"
                 }
               ]
+            },
+            {
+              "name": "Delete current account",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/users/me",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "users",
+                    "me"
+                  ],
+                  "query": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"password\": \"Password123!\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "description": "Delete current account",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{accessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "200 Account deleted",
+                  "originalRequest": {},
+                  "status": "Account deleted",
+                  "code": 200,
+                  "header": [],
+                  "body": "{\n  \"success\": true,\n  \"message\": \"Account deleted\",\n  \"data\": null\n}"
+                },
+                {
+                  "name": "400 Validation failed",
+                  "originalRequest": {},
+                  "status": "Validation failed",
+                  "code": 400,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\"\n}"
+                },
+                {
+                  "name": "401 Authentication token is required",
+                  "originalRequest": {},
+                  "status": "Authentication token is required",
+                  "code": 401,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Authentication token is required\"\n}"
+                },
+                {
+                  "name": "500 Internal server error",
+                  "originalRequest": {},
+                  "status": "Internal server error",
+                  "code": 500,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Internal server error\"\n}"
+                }
+              ]
             }
           ]
         },
@@ -695,6 +912,87 @@
                   "code": 200,
                   "header": [],
                   "body": "{\n  \"success\": true,\n  \"message\": \"Password changed\",\n  \"data\": null\n}"
+                },
+                {
+                  "name": "400 Validation failed",
+                  "originalRequest": {},
+                  "status": "Validation failed",
+                  "code": 400,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\"\n}"
+                },
+                {
+                  "name": "401 Authentication token is required",
+                  "originalRequest": {},
+                  "status": "Authentication token is required",
+                  "code": 401,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Authentication token is required\"\n}"
+                },
+                {
+                  "name": "500 Internal server error",
+                  "originalRequest": {},
+                  "status": "Internal server error",
+                  "code": 500,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Internal server error\"\n}"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "/users/me/export",
+          "item": [
+            {
+              "name": "Export current user data",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/users/me/export",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "users",
+                    "me",
+                    "export"
+                  ],
+                  "query": [
+                    {
+                      "key": "format",
+                      "value": "json",
+                      "description": "Allowed values: json, csv"
+                    }
+                  ]
+                },
+                "description": "Export current user data",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{accessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "200 User data exported",
+                  "originalRequest": {},
+                  "status": "User data exported",
+                  "code": 200,
+                  "header": [],
+                  "body": "{\n  \"success\": true,\n  \"message\": \"User data exported\",\n  \"data\": null\n}"
                 },
                 {
                   "name": "400 Validation failed",
@@ -1116,12 +1414,12 @@
                     },
                     {
                       "key": "from",
-                      "value": "2026-07-21T11:05:06.722Z",
+                      "value": "2026-07-21T11:36:34.572Z",
                       "description": ""
                     },
                     {
                       "key": "to",
-                      "value": "2026-07-21T11:05:06.722Z",
+                      "value": "2026-07-21T11:36:34.573Z",
                       "description": ""
                     },
                     {
@@ -1225,7 +1523,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"amount\": 1250,\n  \"type\": \"INCOME\",\n  \"categoryId\": \"00000000-0000-0000-0000-000000000001\",\n  \"note\": \"Salary for July\",\n  \"date\": \"2026-07-21T11:05:06.722Z\",\n  \"tags\": [\n    \"salary\",\n    \"monthly\"\n  ],\n  \"receiptUrl\": \"https://res.cloudinary.com/.../receipt.png\",\n  \"isRecurring\": false,\n  \"recurringRule\": \"DAILY\"\n}",
+                  "raw": "{\n  \"amount\": 1250,\n  \"type\": \"INCOME\",\n  \"categoryId\": \"00000000-0000-0000-0000-000000000001\",\n  \"note\": \"Salary for July\",\n  \"date\": \"2026-07-21T11:36:34.573Z\",\n  \"tags\": [\n    \"salary\",\n    \"monthly\"\n  ],\n  \"receiptUrl\": \"https://res.cloudinary.com/.../receipt.png\",\n  \"isRecurring\": false,\n  \"recurringRule\": \"DAILY\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -1366,6 +1664,99 @@
           ]
         },
         {
+          "name": "/transactions/{id}/receipt",
+          "item": [
+            {
+              "name": "Attach receipt image to transaction",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/transactions/00000000-0000-0000-0000-000000000001/receipt",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "transactions",
+                    "00000000-0000-0000-0000-000000000001",
+                    "receipt"
+                  ],
+                  "query": []
+                },
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "receipt",
+                      "type": "file",
+                      "value": ""
+                    }
+                  ]
+                },
+                "description": "Attach receipt image to transaction",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{accessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "200 Receipt attached",
+                  "originalRequest": {},
+                  "status": "Receipt attached",
+                  "code": 200,
+                  "header": [],
+                  "body": "{\n  \"success\": true,\n  \"message\": \"Receipt attached\",\n  \"data\": null\n}"
+                },
+                {
+                  "name": "400 Validation failed",
+                  "originalRequest": {},
+                  "status": "Validation failed",
+                  "code": 400,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\"\n}"
+                },
+                {
+                  "name": "401 Authentication token is required",
+                  "originalRequest": {},
+                  "status": "Authentication token is required",
+                  "code": 401,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Authentication token is required\"\n}"
+                },
+                {
+                  "name": "404 Resource not found",
+                  "originalRequest": {},
+                  "status": "Resource not found",
+                  "code": 404,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Resource not found\"\n}"
+                },
+                {
+                  "name": "500 Internal server error",
+                  "originalRequest": {},
+                  "status": "Internal server error",
+                  "code": 500,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Internal server error\"\n}"
+                }
+              ]
+            }
+          ]
+        },
+        {
           "name": "/transactions/{id}",
           "item": [
             {
@@ -1396,7 +1787,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"amount\": 1250,\n  \"type\": \"INCOME\",\n  \"categoryId\": \"00000000-0000-0000-0000-000000000001\",\n  \"note\": \"Salary for July\",\n  \"date\": \"2026-07-21T11:05:06.722Z\",\n  \"tags\": [\n    \"salary\",\n    \"monthly\"\n  ],\n  \"receiptUrl\": \"https://res.cloudinary.com/.../receipt.png\",\n  \"isRecurring\": false,\n  \"recurringRule\": \"DAILY\"\n}",
+                  "raw": "{\n  \"amount\": 1250,\n  \"type\": \"INCOME\",\n  \"categoryId\": \"00000000-0000-0000-0000-000000000001\",\n  \"note\": \"Salary for July\",\n  \"date\": \"2026-07-21T11:36:34.573Z\",\n  \"tags\": [\n    \"salary\",\n    \"monthly\"\n  ],\n  \"receiptUrl\": \"https://res.cloudinary.com/.../receipt.png\",\n  \"isRecurring\": false,\n  \"recurringRule\": \"DAILY\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -1875,6 +2266,83 @@
                   "body": "{\n  \"success\": false,\n  \"message\": \"Internal server error\"\n}"
                 }
               ]
+            },
+            {
+              "name": "Delete budget",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/budgets/00000000-0000-0000-0000-000000000001",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "budgets",
+                    "00000000-0000-0000-0000-000000000001"
+                  ],
+                  "query": []
+                },
+                "description": "Delete budget",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{accessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "200 Budget deleted",
+                  "originalRequest": {},
+                  "status": "Budget deleted",
+                  "code": 200,
+                  "header": [],
+                  "body": "{\n  \"success\": true,\n  \"message\": \"Budget deleted\",\n  \"data\": null\n}"
+                },
+                {
+                  "name": "400 Validation failed",
+                  "originalRequest": {},
+                  "status": "Validation failed",
+                  "code": 400,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\"\n}"
+                },
+                {
+                  "name": "401 Authentication token is required",
+                  "originalRequest": {},
+                  "status": "Authentication token is required",
+                  "code": 401,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Authentication token is required\"\n}"
+                },
+                {
+                  "name": "404 Resource not found",
+                  "originalRequest": {},
+                  "status": "Resource not found",
+                  "code": 404,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Resource not found\"\n}"
+                },
+                {
+                  "name": "500 Internal server error",
+                  "originalRequest": {},
+                  "status": "Internal server error",
+                  "code": 500,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Internal server error\"\n}"
+                }
+              ]
             }
           ]
         }
@@ -1997,7 +2465,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"title\": \"New Laptop\",\n  \"targetAmount\": 120000,\n  \"deadline\": \"2026-07-21T11:05:06.722Z\"\n}",
+                  "raw": "{\n  \"title\": \"New Laptop\",\n  \"targetAmount\": 120000,\n  \"deadline\": \"2026-07-21T11:36:34.573Z\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -2218,6 +2686,95 @@
                   "code": 404,
                   "header": [],
                   "body": "{\n  \"success\": false,\n  \"message\": \"Resource not found\"\n}"
+                },
+                {
+                  "name": "500 Internal server error",
+                  "originalRequest": {},
+                  "status": "Internal server error",
+                  "code": 500,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Internal server error\"\n}"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "item": [
+        {
+          "name": "/dashboard",
+          "item": [
+            {
+              "name": "Get dashboard summary",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/dashboard",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "dashboard"
+                  ],
+                  "query": [
+                    {
+                      "key": "month",
+                      "value": 1,
+                      "description": ""
+                    },
+                    {
+                      "key": "year",
+                      "value": 1,
+                      "description": ""
+                    }
+                  ]
+                },
+                "description": "Get dashboard summary",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{accessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "200 Dashboard fetched",
+                  "originalRequest": {},
+                  "status": "Dashboard fetched",
+                  "code": 200,
+                  "header": [],
+                  "body": "{\n  \"success\": true,\n  \"message\": \"Dashboard fetched\",\n  \"data\": null\n}"
+                },
+                {
+                  "name": "400 Validation failed",
+                  "originalRequest": {},
+                  "status": "Validation failed",
+                  "code": 400,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\"\n}"
+                },
+                {
+                  "name": "401 Authentication token is required",
+                  "originalRequest": {},
+                  "status": "Authentication token is required",
+                  "code": 401,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Authentication token is required\"\n}"
                 },
                 {
                   "name": "500 Internal server error",
@@ -2512,12 +3069,12 @@
                   "query": [
                     {
                       "key": "from",
-                      "value": "2026-07-21T11:05:06.722Z",
+                      "value": "2026-07-21T11:36:34.573Z",
                       "description": ""
                     },
                     {
                       "key": "to",
-                      "value": "2026-07-21T11:05:06.722Z",
+                      "value": "2026-07-21T11:36:34.573Z",
                       "description": ""
                     }
                   ]
@@ -2664,6 +3221,1233 @@
       ]
     },
     {
+      "name": "Family",
+      "item": [
+        {
+          "name": "/family/groups",
+          "item": [
+            {
+              "name": "List family groups",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/family/groups",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "family",
+                    "groups"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": 1,
+                      "description": ""
+                    },
+                    {
+                      "key": "limit",
+                      "value": 20,
+                      "description": ""
+                    }
+                  ]
+                },
+                "description": "List family groups",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{accessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "200 Family groups fetched",
+                  "originalRequest": {},
+                  "status": "Family groups fetched",
+                  "code": 200,
+                  "header": [],
+                  "body": "{\n  \"success\": true,\n  \"message\": \"Family groups fetched\",\n  \"data\": null\n}"
+                },
+                {
+                  "name": "400 Validation failed",
+                  "originalRequest": {},
+                  "status": "Validation failed",
+                  "code": 400,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\"\n}"
+                },
+                {
+                  "name": "401 Authentication token is required",
+                  "originalRequest": {},
+                  "status": "Authentication token is required",
+                  "code": 401,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Authentication token is required\"\n}"
+                },
+                {
+                  "name": "500 Internal server error",
+                  "originalRequest": {},
+                  "status": "Internal server error",
+                  "code": 500,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Internal server error\"\n}"
+                }
+              ]
+            },
+            {
+              "name": "Create family group",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/family/groups",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "family",
+                    "groups"
+                  ],
+                  "query": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Home\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "description": "Create family group",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{accessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "201 Family group created",
+                  "originalRequest": {},
+                  "status": "Family group created",
+                  "code": 201,
+                  "header": [],
+                  "body": "{\n  \"success\": true,\n  \"message\": \"Family group created\",\n  \"data\": null\n}"
+                },
+                {
+                  "name": "400 Validation failed",
+                  "originalRequest": {},
+                  "status": "Validation failed",
+                  "code": 400,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\"\n}"
+                },
+                {
+                  "name": "401 Authentication token is required",
+                  "originalRequest": {},
+                  "status": "Authentication token is required",
+                  "code": 401,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Authentication token is required\"\n}"
+                },
+                {
+                  "name": "500 Internal server error",
+                  "originalRequest": {},
+                  "status": "Internal server error",
+                  "code": 500,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Internal server error\"\n}"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "/family/groups/{id}/invite",
+          "item": [
+            {
+              "name": "Invite member to family group",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/family/groups/00000000-0000-0000-0000-000000000001/invite",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "family",
+                    "groups",
+                    "00000000-0000-0000-0000-000000000001",
+                    "invite"
+                  ],
+                  "query": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"user@example.com\",\n  \"role\": \"MEMBER\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "description": "Invite member to family group",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{accessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "201 Invitation sent",
+                  "originalRequest": {},
+                  "status": "Invitation sent",
+                  "code": 201,
+                  "header": [],
+                  "body": "{\n  \"success\": true,\n  \"message\": \"Invitation sent\",\n  \"data\": null\n}"
+                },
+                {
+                  "name": "400 Validation failed",
+                  "originalRequest": {},
+                  "status": "Validation failed",
+                  "code": 400,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\"\n}"
+                },
+                {
+                  "name": "401 Authentication token is required",
+                  "originalRequest": {},
+                  "status": "Authentication token is required",
+                  "code": 401,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Authentication token is required\"\n}"
+                },
+                {
+                  "name": "404 Resource not found",
+                  "originalRequest": {},
+                  "status": "Resource not found",
+                  "code": 404,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Resource not found\"\n}"
+                },
+                {
+                  "name": "500 Internal server error",
+                  "originalRequest": {},
+                  "status": "Internal server error",
+                  "code": 500,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Internal server error\"\n}"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "/family/invitations/{token}/accept",
+          "item": [
+            {
+              "name": "Accept family invitation",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/family/invitations/invitation-token/accept",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "family",
+                    "invitations",
+                    "invitation-token",
+                    "accept"
+                  ],
+                  "query": []
+                },
+                "description": "Accept family invitation",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{accessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "200 Invitation accepted",
+                  "originalRequest": {},
+                  "status": "Invitation accepted",
+                  "code": 200,
+                  "header": [],
+                  "body": "{\n  \"success\": true,\n  \"message\": \"Invitation accepted\",\n  \"data\": null\n}"
+                },
+                {
+                  "name": "400 Validation failed",
+                  "originalRequest": {},
+                  "status": "Validation failed",
+                  "code": 400,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\"\n}"
+                },
+                {
+                  "name": "401 Authentication token is required",
+                  "originalRequest": {},
+                  "status": "Authentication token is required",
+                  "code": 401,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Authentication token is required\"\n}"
+                },
+                {
+                  "name": "404 Resource not found",
+                  "originalRequest": {},
+                  "status": "Resource not found",
+                  "code": 404,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Resource not found\"\n}"
+                },
+                {
+                  "name": "500 Internal server error",
+                  "originalRequest": {},
+                  "status": "Internal server error",
+                  "code": 500,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Internal server error\"\n}"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "/family/groups/{id}/members/{userId}",
+          "item": [
+            {
+              "name": "Remove member from family group",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/family/groups/00000000-0000-0000-0000-000000000001/members/00000000-0000-0000-0000-000000000001",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "family",
+                    "groups",
+                    "00000000-0000-0000-0000-000000000001",
+                    "members",
+                    "00000000-0000-0000-0000-000000000001"
+                  ],
+                  "query": []
+                },
+                "description": "Remove member from family group",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{accessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "200 Member removed",
+                  "originalRequest": {},
+                  "status": "Member removed",
+                  "code": 200,
+                  "header": [],
+                  "body": "{\n  \"success\": true,\n  \"message\": \"Member removed\",\n  \"data\": null\n}"
+                },
+                {
+                  "name": "400 Validation failed",
+                  "originalRequest": {},
+                  "status": "Validation failed",
+                  "code": 400,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\"\n}"
+                },
+                {
+                  "name": "401 Authentication token is required",
+                  "originalRequest": {},
+                  "status": "Authentication token is required",
+                  "code": 401,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Authentication token is required\"\n}"
+                },
+                {
+                  "name": "404 Resource not found",
+                  "originalRequest": {},
+                  "status": "Resource not found",
+                  "code": 404,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Resource not found\"\n}"
+                },
+                {
+                  "name": "500 Internal server error",
+                  "originalRequest": {},
+                  "status": "Internal server error",
+                  "code": 500,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Internal server error\"\n}"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "/family/groups/{id}/transactions",
+          "item": [
+            {
+              "name": "List family group transactions",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/family/groups/00000000-0000-0000-0000-000000000001/transactions",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "family",
+                    "groups",
+                    "00000000-0000-0000-0000-000000000001",
+                    "transactions"
+                  ],
+                  "query": [
+                    {
+                      "key": "from",
+                      "value": "2026-07-21T11:36:34.573Z",
+                      "description": ""
+                    },
+                    {
+                      "key": "to",
+                      "value": "2026-07-21T11:36:34.573Z",
+                      "description": ""
+                    },
+                    {
+                      "key": "page",
+                      "value": 1,
+                      "description": ""
+                    },
+                    {
+                      "key": "limit",
+                      "value": 20,
+                      "description": ""
+                    }
+                  ]
+                },
+                "description": "List family group transactions",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{accessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "200 Family transactions fetched",
+                  "originalRequest": {},
+                  "status": "Family transactions fetched",
+                  "code": 200,
+                  "header": [],
+                  "body": "{\n  \"success\": true,\n  \"message\": \"Family transactions fetched\",\n  \"data\": null\n}"
+                },
+                {
+                  "name": "400 Validation failed",
+                  "originalRequest": {},
+                  "status": "Validation failed",
+                  "code": 400,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\"\n}"
+                },
+                {
+                  "name": "401 Authentication token is required",
+                  "originalRequest": {},
+                  "status": "Authentication token is required",
+                  "code": 401,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Authentication token is required\"\n}"
+                },
+                {
+                  "name": "404 Resource not found",
+                  "originalRequest": {},
+                  "status": "Resource not found",
+                  "code": 404,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Resource not found\"\n}"
+                },
+                {
+                  "name": "500 Internal server error",
+                  "originalRequest": {},
+                  "status": "Internal server error",
+                  "code": 500,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Internal server error\"\n}"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Notifications",
+      "item": [
+        {
+          "name": "/notifications",
+          "item": [
+            {
+              "name": "List notifications",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/notifications",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "notifications"
+                  ],
+                  "query": [
+                    {
+                      "key": "isRead",
+                      "value": true,
+                      "description": ""
+                    },
+                    {
+                      "key": "page",
+                      "value": 1,
+                      "description": ""
+                    },
+                    {
+                      "key": "limit",
+                      "value": 20,
+                      "description": ""
+                    }
+                  ]
+                },
+                "description": "List notifications",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{accessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "200 Notifications fetched",
+                  "originalRequest": {},
+                  "status": "Notifications fetched",
+                  "code": 200,
+                  "header": [],
+                  "body": "{\n  \"success\": true,\n  \"message\": \"Notifications fetched\",\n  \"data\": null\n}"
+                },
+                {
+                  "name": "400 Validation failed",
+                  "originalRequest": {},
+                  "status": "Validation failed",
+                  "code": 400,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\"\n}"
+                },
+                {
+                  "name": "401 Authentication token is required",
+                  "originalRequest": {},
+                  "status": "Authentication token is required",
+                  "code": 401,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Authentication token is required\"\n}"
+                },
+                {
+                  "name": "500 Internal server error",
+                  "originalRequest": {},
+                  "status": "Internal server error",
+                  "code": 500,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Internal server error\"\n}"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "/notifications/unread-count",
+          "item": [
+            {
+              "name": "Get unread notification count",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/notifications/unread-count",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "notifications",
+                    "unread-count"
+                  ],
+                  "query": []
+                },
+                "description": "Get unread notification count",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{accessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "200 Unread count fetched",
+                  "originalRequest": {},
+                  "status": "Unread count fetched",
+                  "code": 200,
+                  "header": [],
+                  "body": "{\n  \"success\": true,\n  \"message\": \"Unread count fetched\",\n  \"data\": null\n}"
+                },
+                {
+                  "name": "401 Authentication token is required",
+                  "originalRequest": {},
+                  "status": "Authentication token is required",
+                  "code": 401,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Authentication token is required\"\n}"
+                },
+                {
+                  "name": "500 Internal server error",
+                  "originalRequest": {},
+                  "status": "Internal server error",
+                  "code": 500,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Internal server error\"\n}"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "/notifications/read-all",
+          "item": [
+            {
+              "name": "Mark all notifications as read",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/notifications/read-all",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "notifications",
+                    "read-all"
+                  ],
+                  "query": []
+                },
+                "description": "Mark all notifications as read",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{accessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "200 Notifications marked as read",
+                  "originalRequest": {},
+                  "status": "Notifications marked as read",
+                  "code": 200,
+                  "header": [],
+                  "body": "{\n  \"success\": true,\n  \"message\": \"Notifications marked as read\",\n  \"data\": null\n}"
+                },
+                {
+                  "name": "400 Validation failed",
+                  "originalRequest": {},
+                  "status": "Validation failed",
+                  "code": 400,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\"\n}"
+                },
+                {
+                  "name": "401 Authentication token is required",
+                  "originalRequest": {},
+                  "status": "Authentication token is required",
+                  "code": 401,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Authentication token is required\"\n}"
+                },
+                {
+                  "name": "500 Internal server error",
+                  "originalRequest": {},
+                  "status": "Internal server error",
+                  "code": 500,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Internal server error\"\n}"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "/notifications/{id}/read",
+          "item": [
+            {
+              "name": "Mark notification as read",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/notifications/00000000-0000-0000-0000-000000000001/read",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "notifications",
+                    "00000000-0000-0000-0000-000000000001",
+                    "read"
+                  ],
+                  "query": []
+                },
+                "description": "Mark notification as read",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{accessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "200 Notification marked as read",
+                  "originalRequest": {},
+                  "status": "Notification marked as read",
+                  "code": 200,
+                  "header": [],
+                  "body": "{\n  \"success\": true,\n  \"message\": \"Notification marked as read\",\n  \"data\": null\n}"
+                },
+                {
+                  "name": "400 Validation failed",
+                  "originalRequest": {},
+                  "status": "Validation failed",
+                  "code": 400,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\"\n}"
+                },
+                {
+                  "name": "401 Authentication token is required",
+                  "originalRequest": {},
+                  "status": "Authentication token is required",
+                  "code": 401,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Authentication token is required\"\n}"
+                },
+                {
+                  "name": "404 Resource not found",
+                  "originalRequest": {},
+                  "status": "Resource not found",
+                  "code": 404,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Resource not found\"\n}"
+                },
+                {
+                  "name": "500 Internal server error",
+                  "originalRequest": {},
+                  "status": "Internal server error",
+                  "code": 500,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Internal server error\"\n}"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Billing",
+      "item": [
+        {
+          "name": "/billing/webhook",
+          "item": [
+            {
+              "name": "Stripe billing webhook",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/billing/webhook",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "billing",
+                    "webhook"
+                  ],
+                  "query": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "description": "Stripe billing webhook"
+              },
+              "response": [
+                {
+                  "name": "200 Webhook processed",
+                  "originalRequest": {},
+                  "status": "Webhook processed",
+                  "code": 200,
+                  "header": [],
+                  "body": "{\n  \"success\": true,\n  \"message\": \"Webhook processed\",\n  \"data\": null\n}"
+                },
+                {
+                  "name": "400 Validation failed",
+                  "originalRequest": {},
+                  "status": "Validation failed",
+                  "code": 400,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\"\n}"
+                },
+                {
+                  "name": "500 Internal server error",
+                  "originalRequest": {},
+                  "status": "Internal server error",
+                  "code": 500,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Internal server error\"\n}"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "/billing/plans",
+          "item": [
+            {
+              "name": "List billing plans",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/billing/plans",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "billing",
+                    "plans"
+                  ],
+                  "query": []
+                },
+                "description": "List billing plans",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{accessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "200 Billing plans fetched",
+                  "originalRequest": {},
+                  "status": "Billing plans fetched",
+                  "code": 200,
+                  "header": [],
+                  "body": "{\n  \"success\": true,\n  \"message\": \"Billing plans fetched\",\n  \"data\": null\n}"
+                },
+                {
+                  "name": "401 Authentication token is required",
+                  "originalRequest": {},
+                  "status": "Authentication token is required",
+                  "code": 401,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Authentication token is required\"\n}"
+                },
+                {
+                  "name": "500 Internal server error",
+                  "originalRequest": {},
+                  "status": "Internal server error",
+                  "code": 500,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Internal server error\"\n}"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "/billing/subscription",
+          "item": [
+            {
+              "name": "Get current subscription",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/billing/subscription",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "billing",
+                    "subscription"
+                  ],
+                  "query": []
+                },
+                "description": "Get current subscription",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{accessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "200 Subscription fetched",
+                  "originalRequest": {},
+                  "status": "Subscription fetched",
+                  "code": 200,
+                  "header": [],
+                  "body": "{\n  \"success\": true,\n  \"message\": \"Subscription fetched\",\n  \"data\": null\n}"
+                },
+                {
+                  "name": "401 Authentication token is required",
+                  "originalRequest": {},
+                  "status": "Authentication token is required",
+                  "code": 401,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Authentication token is required\"\n}"
+                },
+                {
+                  "name": "500 Internal server error",
+                  "originalRequest": {},
+                  "status": "Internal server error",
+                  "code": 500,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Internal server error\"\n}"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "/billing/checkout",
+          "item": [
+            {
+              "name": "Create Stripe checkout session",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/billing/checkout",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "billing",
+                    "checkout"
+                  ],
+                  "query": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"planId\": \"00000000-0000-0000-0000-000000000001\",\n  \"successUrl\": \"http://localhost:3000/billing/success\",\n  \"cancelUrl\": \"http://localhost:3000/billing/cancel\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "description": "Create Stripe checkout session",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{accessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "200 Checkout session created",
+                  "originalRequest": {},
+                  "status": "Checkout session created",
+                  "code": 200,
+                  "header": [],
+                  "body": "{\n  \"success\": true,\n  \"message\": \"Checkout session created\",\n  \"data\": null\n}"
+                },
+                {
+                  "name": "400 Validation failed",
+                  "originalRequest": {},
+                  "status": "Validation failed",
+                  "code": 400,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\"\n}"
+                },
+                {
+                  "name": "401 Authentication token is required",
+                  "originalRequest": {},
+                  "status": "Authentication token is required",
+                  "code": 401,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Authentication token is required\"\n}"
+                },
+                {
+                  "name": "500 Internal server error",
+                  "originalRequest": {},
+                  "status": "Internal server error",
+                  "code": 500,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Internal server error\"\n}"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "/billing/portal",
+          "item": [
+            {
+              "name": "Create Stripe customer portal session",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/billing/portal",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "billing",
+                    "portal"
+                  ],
+                  "query": []
+                },
+                "description": "Create Stripe customer portal session",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{accessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "200 Portal session created",
+                  "originalRequest": {},
+                  "status": "Portal session created",
+                  "code": 200,
+                  "header": [],
+                  "body": "{\n  \"success\": true,\n  \"message\": \"Portal session created\",\n  \"data\": null\n}"
+                },
+                {
+                  "name": "400 Validation failed",
+                  "originalRequest": {},
+                  "status": "Validation failed",
+                  "code": 400,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\"\n}"
+                },
+                {
+                  "name": "401 Authentication token is required",
+                  "originalRequest": {},
+                  "status": "Authentication token is required",
+                  "code": 401,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Authentication token is required\"\n}"
+                },
+                {
+                  "name": "500 Internal server error",
+                  "originalRequest": {},
+                  "status": "Internal server error",
+                  "code": 500,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Internal server error\"\n}"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
       "name": "Admin",
       "item": [
         {
@@ -2775,6 +4559,97 @@
           ]
         },
         {
+          "name": "/admin/users/{id}",
+          "item": [
+            {
+              "name": "Get admin user detail",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/users/00000000-0000-0000-0000-000000000001",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "users",
+                    "00000000-0000-0000-0000-000000000001"
+                  ],
+                  "query": []
+                },
+                "description": "Get admin user detail",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{accessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "200 User detail fetched",
+                  "originalRequest": {},
+                  "status": "User detail fetched",
+                  "code": 200,
+                  "header": [],
+                  "body": "{\n  \"success\": true,\n  \"message\": \"User detail fetched\",\n  \"data\": null\n}"
+                },
+                {
+                  "name": "400 Validation failed",
+                  "originalRequest": {},
+                  "status": "Validation failed",
+                  "code": 400,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\"\n}"
+                },
+                {
+                  "name": "401 Authentication token is required",
+                  "originalRequest": {},
+                  "status": "Authentication token is required",
+                  "code": 401,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Authentication token is required\"\n}"
+                },
+                {
+                  "name": "403 You do not have permission to access this resource",
+                  "originalRequest": {},
+                  "status": "You do not have permission to access this resource",
+                  "code": 403,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"You do not have permission to access this resource\"\n}"
+                },
+                {
+                  "name": "404 Resource not found",
+                  "originalRequest": {},
+                  "status": "Resource not found",
+                  "code": 404,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Resource not found\"\n}"
+                },
+                {
+                  "name": "500 Internal server error",
+                  "originalRequest": {},
+                  "status": "Internal server error",
+                  "code": 500,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Internal server error\"\n}"
+                }
+              ]
+            }
+          ]
+        },
+        {
           "name": "/admin/users/{id}/status",
           "item": [
             {
@@ -2866,6 +4741,1803 @@
                   "code": 404,
                   "header": [],
                   "body": "{\n  \"success\": false,\n  \"message\": \"Resource not found\"\n}"
+                },
+                {
+                  "name": "500 Internal server error",
+                  "originalRequest": {},
+                  "status": "Internal server error",
+                  "code": 500,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Internal server error\"\n}"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "/admin/users/{id}/impersonate",
+          "item": [
+            {
+              "name": "Create impersonation token for user",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/users/00000000-0000-0000-0000-000000000001/impersonate",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "users",
+                    "00000000-0000-0000-0000-000000000001",
+                    "impersonate"
+                  ],
+                  "query": []
+                },
+                "description": "Create impersonation token for user",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{accessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "200 Impersonation token created",
+                  "originalRequest": {},
+                  "status": "Impersonation token created",
+                  "code": 200,
+                  "header": [],
+                  "body": "{\n  \"success\": true,\n  \"message\": \"Impersonation token created\",\n  \"data\": null\n}"
+                },
+                {
+                  "name": "400 Validation failed",
+                  "originalRequest": {},
+                  "status": "Validation failed",
+                  "code": 400,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\"\n}"
+                },
+                {
+                  "name": "401 Authentication token is required",
+                  "originalRequest": {},
+                  "status": "Authentication token is required",
+                  "code": 401,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Authentication token is required\"\n}"
+                },
+                {
+                  "name": "403 You do not have permission to access this resource",
+                  "originalRequest": {},
+                  "status": "You do not have permission to access this resource",
+                  "code": 403,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"You do not have permission to access this resource\"\n}"
+                },
+                {
+                  "name": "404 Resource not found",
+                  "originalRequest": {},
+                  "status": "Resource not found",
+                  "code": 404,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Resource not found\"\n}"
+                },
+                {
+                  "name": "500 Internal server error",
+                  "originalRequest": {},
+                  "status": "Internal server error",
+                  "code": 500,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Internal server error\"\n}"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "/admin/users/{id}/plan",
+          "item": [
+            {
+              "name": "Assign plan to user",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/users/00000000-0000-0000-0000-000000000001/plan",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "users",
+                    "00000000-0000-0000-0000-000000000001",
+                    "plan"
+                  ],
+                  "query": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"planId\": \"00000000-0000-0000-0000-000000000001\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "description": "Assign plan to user",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{accessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "200 User plan assigned",
+                  "originalRequest": {},
+                  "status": "User plan assigned",
+                  "code": 200,
+                  "header": [],
+                  "body": "{\n  \"success\": true,\n  \"message\": \"User plan assigned\",\n  \"data\": null\n}"
+                },
+                {
+                  "name": "400 Validation failed",
+                  "originalRequest": {},
+                  "status": "Validation failed",
+                  "code": 400,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\"\n}"
+                },
+                {
+                  "name": "401 Authentication token is required",
+                  "originalRequest": {},
+                  "status": "Authentication token is required",
+                  "code": 401,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Authentication token is required\"\n}"
+                },
+                {
+                  "name": "403 You do not have permission to access this resource",
+                  "originalRequest": {},
+                  "status": "You do not have permission to access this resource",
+                  "code": 403,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"You do not have permission to access this resource\"\n}"
+                },
+                {
+                  "name": "404 Resource not found",
+                  "originalRequest": {},
+                  "status": "Resource not found",
+                  "code": 404,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Resource not found\"\n}"
+                },
+                {
+                  "name": "500 Internal server error",
+                  "originalRequest": {},
+                  "status": "Internal server error",
+                  "code": 500,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Internal server error\"\n}"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "/admin/subscriptions",
+          "item": [
+            {
+              "name": "List subscriptions",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/subscriptions",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "subscriptions"
+                  ],
+                  "query": [
+                    {
+                      "key": "status",
+                      "value": "string",
+                      "description": ""
+                    },
+                    {
+                      "key": "page",
+                      "value": 1,
+                      "description": ""
+                    },
+                    {
+                      "key": "limit",
+                      "value": 20,
+                      "description": ""
+                    }
+                  ]
+                },
+                "description": "List subscriptions",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{accessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "200 Subscriptions fetched",
+                  "originalRequest": {},
+                  "status": "Subscriptions fetched",
+                  "code": 200,
+                  "header": [],
+                  "body": "{\n  \"success\": true,\n  \"message\": \"Subscriptions fetched\",\n  \"data\": null\n}"
+                },
+                {
+                  "name": "400 Validation failed",
+                  "originalRequest": {},
+                  "status": "Validation failed",
+                  "code": 400,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\"\n}"
+                },
+                {
+                  "name": "401 Authentication token is required",
+                  "originalRequest": {},
+                  "status": "Authentication token is required",
+                  "code": 401,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Authentication token is required\"\n}"
+                },
+                {
+                  "name": "403 You do not have permission to access this resource",
+                  "originalRequest": {},
+                  "status": "You do not have permission to access this resource",
+                  "code": 403,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"You do not have permission to access this resource\"\n}"
+                },
+                {
+                  "name": "500 Internal server error",
+                  "originalRequest": {},
+                  "status": "Internal server error",
+                  "code": 500,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Internal server error\"\n}"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "/admin/subscriptions/{id}/refund",
+          "item": [
+            {
+              "name": "Refund subscription payment",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/subscriptions/00000000-0000-0000-0000-000000000001/refund",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "subscriptions",
+                    "00000000-0000-0000-0000-000000000001",
+                    "refund"
+                  ],
+                  "query": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"amount\": 10,\n  \"reason\": \"requested_by_customer\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "description": "Refund subscription payment",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{accessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "200 Subscription refunded",
+                  "originalRequest": {},
+                  "status": "Subscription refunded",
+                  "code": 200,
+                  "header": [],
+                  "body": "{\n  \"success\": true,\n  \"message\": \"Subscription refunded\",\n  \"data\": null\n}"
+                },
+                {
+                  "name": "400 Validation failed",
+                  "originalRequest": {},
+                  "status": "Validation failed",
+                  "code": 400,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\"\n}"
+                },
+                {
+                  "name": "401 Authentication token is required",
+                  "originalRequest": {},
+                  "status": "Authentication token is required",
+                  "code": 401,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Authentication token is required\"\n}"
+                },
+                {
+                  "name": "403 You do not have permission to access this resource",
+                  "originalRequest": {},
+                  "status": "You do not have permission to access this resource",
+                  "code": 403,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"You do not have permission to access this resource\"\n}"
+                },
+                {
+                  "name": "404 Resource not found",
+                  "originalRequest": {},
+                  "status": "Resource not found",
+                  "code": 404,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Resource not found\"\n}"
+                },
+                {
+                  "name": "500 Internal server error",
+                  "originalRequest": {},
+                  "status": "Internal server error",
+                  "code": 500,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Internal server error\"\n}"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "/admin/subscriptions/{id}/cancel",
+          "item": [
+            {
+              "name": "Cancel subscription",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/subscriptions/00000000-0000-0000-0000-000000000001/cancel",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "subscriptions",
+                    "00000000-0000-0000-0000-000000000001",
+                    "cancel"
+                  ],
+                  "query": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"reason\": \"Admin cancellation\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "description": "Cancel subscription",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{accessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "200 Subscription cancelled",
+                  "originalRequest": {},
+                  "status": "Subscription cancelled",
+                  "code": 200,
+                  "header": [],
+                  "body": "{\n  \"success\": true,\n  \"message\": \"Subscription cancelled\",\n  \"data\": null\n}"
+                },
+                {
+                  "name": "400 Validation failed",
+                  "originalRequest": {},
+                  "status": "Validation failed",
+                  "code": 400,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\"\n}"
+                },
+                {
+                  "name": "401 Authentication token is required",
+                  "originalRequest": {},
+                  "status": "Authentication token is required",
+                  "code": 401,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Authentication token is required\"\n}"
+                },
+                {
+                  "name": "403 You do not have permission to access this resource",
+                  "originalRequest": {},
+                  "status": "You do not have permission to access this resource",
+                  "code": 403,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"You do not have permission to access this resource\"\n}"
+                },
+                {
+                  "name": "404 Resource not found",
+                  "originalRequest": {},
+                  "status": "Resource not found",
+                  "code": 404,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Resource not found\"\n}"
+                },
+                {
+                  "name": "500 Internal server error",
+                  "originalRequest": {},
+                  "status": "Internal server error",
+                  "code": 500,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Internal server error\"\n}"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "/admin/subscriptions/{id}/reactivate",
+          "item": [
+            {
+              "name": "Reactivate subscription",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/subscriptions/00000000-0000-0000-0000-000000000001/reactivate",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "subscriptions",
+                    "00000000-0000-0000-0000-000000000001",
+                    "reactivate"
+                  ],
+                  "query": []
+                },
+                "description": "Reactivate subscription",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{accessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "200 Subscription reactivated",
+                  "originalRequest": {},
+                  "status": "Subscription reactivated",
+                  "code": 200,
+                  "header": [],
+                  "body": "{\n  \"success\": true,\n  \"message\": \"Subscription reactivated\",\n  \"data\": null\n}"
+                },
+                {
+                  "name": "400 Validation failed",
+                  "originalRequest": {},
+                  "status": "Validation failed",
+                  "code": 400,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\"\n}"
+                },
+                {
+                  "name": "401 Authentication token is required",
+                  "originalRequest": {},
+                  "status": "Authentication token is required",
+                  "code": 401,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Authentication token is required\"\n}"
+                },
+                {
+                  "name": "403 You do not have permission to access this resource",
+                  "originalRequest": {},
+                  "status": "You do not have permission to access this resource",
+                  "code": 403,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"You do not have permission to access this resource\"\n}"
+                },
+                {
+                  "name": "404 Resource not found",
+                  "originalRequest": {},
+                  "status": "Resource not found",
+                  "code": 404,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Resource not found\"\n}"
+                },
+                {
+                  "name": "500 Internal server error",
+                  "originalRequest": {},
+                  "status": "Internal server error",
+                  "code": 500,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Internal server error\"\n}"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "/admin/plans",
+          "item": [
+            {
+              "name": "List plans",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/plans",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "plans"
+                  ],
+                  "query": [
+                    {
+                      "key": "includeArchived",
+                      "value": false,
+                      "description": ""
+                    }
+                  ]
+                },
+                "description": "List plans",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{accessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "200 Plans fetched",
+                  "originalRequest": {},
+                  "status": "Plans fetched",
+                  "code": 200,
+                  "header": [],
+                  "body": "{\n  \"success\": true,\n  \"message\": \"Plans fetched\",\n  \"data\": null\n}"
+                },
+                {
+                  "name": "400 Validation failed",
+                  "originalRequest": {},
+                  "status": "Validation failed",
+                  "code": 400,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\"\n}"
+                },
+                {
+                  "name": "401 Authentication token is required",
+                  "originalRequest": {},
+                  "status": "Authentication token is required",
+                  "code": 401,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Authentication token is required\"\n}"
+                },
+                {
+                  "name": "403 You do not have permission to access this resource",
+                  "originalRequest": {},
+                  "status": "You do not have permission to access this resource",
+                  "code": 403,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"You do not have permission to access this resource\"\n}"
+                },
+                {
+                  "name": "500 Internal server error",
+                  "originalRequest": {},
+                  "status": "Internal server error",
+                  "code": 500,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Internal server error\"\n}"
+                }
+              ]
+            },
+            {
+              "name": "Create plan",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/plans",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "plans"
+                  ],
+                  "query": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Pro\",\n  \"price\": 9.99,\n  \"billingInterval\": \"MONTHLY\",\n  \"features\": [\n    \"string\"\n  ],\n  \"stripePriceId\": \"price_123\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "description": "Create plan",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{accessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "201 Plan created",
+                  "originalRequest": {},
+                  "status": "Plan created",
+                  "code": 201,
+                  "header": [],
+                  "body": "{\n  \"success\": true,\n  \"message\": \"Plan created\",\n  \"data\": null\n}"
+                },
+                {
+                  "name": "400 Validation failed",
+                  "originalRequest": {},
+                  "status": "Validation failed",
+                  "code": 400,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\"\n}"
+                },
+                {
+                  "name": "401 Authentication token is required",
+                  "originalRequest": {},
+                  "status": "Authentication token is required",
+                  "code": 401,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Authentication token is required\"\n}"
+                },
+                {
+                  "name": "403 You do not have permission to access this resource",
+                  "originalRequest": {},
+                  "status": "You do not have permission to access this resource",
+                  "code": 403,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"You do not have permission to access this resource\"\n}"
+                },
+                {
+                  "name": "500 Internal server error",
+                  "originalRequest": {},
+                  "status": "Internal server error",
+                  "code": 500,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Internal server error\"\n}"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "/admin/plans/{id}",
+          "item": [
+            {
+              "name": "Update plan",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/plans/00000000-0000-0000-0000-000000000001",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "plans",
+                    "00000000-0000-0000-0000-000000000001"
+                  ],
+                  "query": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Pro\",\n  \"price\": 9.99,\n  \"billingInterval\": \"MONTHLY\",\n  \"features\": [\n    \"string\"\n  ],\n  \"isActive\": true\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "description": "Update plan",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{accessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "200 Plan updated",
+                  "originalRequest": {},
+                  "status": "Plan updated",
+                  "code": 200,
+                  "header": [],
+                  "body": "{\n  \"success\": true,\n  \"message\": \"Plan updated\",\n  \"data\": null\n}"
+                },
+                {
+                  "name": "400 Validation failed",
+                  "originalRequest": {},
+                  "status": "Validation failed",
+                  "code": 400,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\"\n}"
+                },
+                {
+                  "name": "401 Authentication token is required",
+                  "originalRequest": {},
+                  "status": "Authentication token is required",
+                  "code": 401,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Authentication token is required\"\n}"
+                },
+                {
+                  "name": "403 You do not have permission to access this resource",
+                  "originalRequest": {},
+                  "status": "You do not have permission to access this resource",
+                  "code": 403,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"You do not have permission to access this resource\"\n}"
+                },
+                {
+                  "name": "404 Resource not found",
+                  "originalRequest": {},
+                  "status": "Resource not found",
+                  "code": 404,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Resource not found\"\n}"
+                },
+                {
+                  "name": "500 Internal server error",
+                  "originalRequest": {},
+                  "status": "Internal server error",
+                  "code": 500,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Internal server error\"\n}"
+                }
+              ]
+            },
+            {
+              "name": "Archive plan",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/plans/00000000-0000-0000-0000-000000000001",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "plans",
+                    "00000000-0000-0000-0000-000000000001"
+                  ],
+                  "query": []
+                },
+                "description": "Archive plan",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{accessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "200 Plan archived",
+                  "originalRequest": {},
+                  "status": "Plan archived",
+                  "code": 200,
+                  "header": [],
+                  "body": "{\n  \"success\": true,\n  \"message\": \"Plan archived\",\n  \"data\": null\n}"
+                },
+                {
+                  "name": "400 Validation failed",
+                  "originalRequest": {},
+                  "status": "Validation failed",
+                  "code": 400,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\"\n}"
+                },
+                {
+                  "name": "401 Authentication token is required",
+                  "originalRequest": {},
+                  "status": "Authentication token is required",
+                  "code": 401,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Authentication token is required\"\n}"
+                },
+                {
+                  "name": "403 You do not have permission to access this resource",
+                  "originalRequest": {},
+                  "status": "You do not have permission to access this resource",
+                  "code": 403,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"You do not have permission to access this resource\"\n}"
+                },
+                {
+                  "name": "404 Resource not found",
+                  "originalRequest": {},
+                  "status": "Resource not found",
+                  "code": 404,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Resource not found\"\n}"
+                },
+                {
+                  "name": "500 Internal server error",
+                  "originalRequest": {},
+                  "status": "Internal server error",
+                  "code": 500,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Internal server error\"\n}"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "/admin/categories",
+          "item": [
+            {
+              "name": "List global categories",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/categories",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "categories"
+                  ],
+                  "query": [
+                    {
+                      "key": "type",
+                      "value": "INCOME",
+                      "description": "Allowed values: INCOME, EXPENSE"
+                    },
+                    {
+                      "key": "search",
+                      "value": "string",
+                      "description": ""
+                    }
+                  ]
+                },
+                "description": "List global categories",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{accessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "200 Global categories fetched",
+                  "originalRequest": {},
+                  "status": "Global categories fetched",
+                  "code": 200,
+                  "header": [],
+                  "body": "{\n  \"success\": true,\n  \"message\": \"Global categories fetched\",\n  \"data\": null\n}"
+                },
+                {
+                  "name": "400 Validation failed",
+                  "originalRequest": {},
+                  "status": "Validation failed",
+                  "code": 400,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\"\n}"
+                },
+                {
+                  "name": "401 Authentication token is required",
+                  "originalRequest": {},
+                  "status": "Authentication token is required",
+                  "code": 401,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Authentication token is required\"\n}"
+                },
+                {
+                  "name": "403 You do not have permission to access this resource",
+                  "originalRequest": {},
+                  "status": "You do not have permission to access this resource",
+                  "code": 403,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"You do not have permission to access this resource\"\n}"
+                },
+                {
+                  "name": "500 Internal server error",
+                  "originalRequest": {},
+                  "status": "Internal server error",
+                  "code": 500,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Internal server error\"\n}"
+                }
+              ]
+            },
+            {
+              "name": "Create global category",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/categories",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "categories"
+                  ],
+                  "query": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Food\",\n  \"type\": \"INCOME\",\n  \"icon\": \"utensils\",\n  \"color\": \"#f97316\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "description": "Create global category",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{accessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "201 Global category created",
+                  "originalRequest": {},
+                  "status": "Global category created",
+                  "code": 201,
+                  "header": [],
+                  "body": "{\n  \"success\": true,\n  \"message\": \"Global category created\",\n  \"data\": null\n}"
+                },
+                {
+                  "name": "400 Validation failed",
+                  "originalRequest": {},
+                  "status": "Validation failed",
+                  "code": 400,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\"\n}"
+                },
+                {
+                  "name": "401 Authentication token is required",
+                  "originalRequest": {},
+                  "status": "Authentication token is required",
+                  "code": 401,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Authentication token is required\"\n}"
+                },
+                {
+                  "name": "403 You do not have permission to access this resource",
+                  "originalRequest": {},
+                  "status": "You do not have permission to access this resource",
+                  "code": 403,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"You do not have permission to access this resource\"\n}"
+                },
+                {
+                  "name": "500 Internal server error",
+                  "originalRequest": {},
+                  "status": "Internal server error",
+                  "code": 500,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Internal server error\"\n}"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "/admin/categories/{id}",
+          "item": [
+            {
+              "name": "Update global category",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/categories/00000000-0000-0000-0000-000000000001",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "categories",
+                    "00000000-0000-0000-0000-000000000001"
+                  ],
+                  "query": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Food\",\n  \"type\": \"INCOME\",\n  \"icon\": \"utensils\",\n  \"color\": \"#f97316\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "description": "Update global category",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{accessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "200 Global category updated",
+                  "originalRequest": {},
+                  "status": "Global category updated",
+                  "code": 200,
+                  "header": [],
+                  "body": "{\n  \"success\": true,\n  \"message\": \"Global category updated\",\n  \"data\": null\n}"
+                },
+                {
+                  "name": "400 Validation failed",
+                  "originalRequest": {},
+                  "status": "Validation failed",
+                  "code": 400,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\"\n}"
+                },
+                {
+                  "name": "401 Authentication token is required",
+                  "originalRequest": {},
+                  "status": "Authentication token is required",
+                  "code": 401,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Authentication token is required\"\n}"
+                },
+                {
+                  "name": "403 You do not have permission to access this resource",
+                  "originalRequest": {},
+                  "status": "You do not have permission to access this resource",
+                  "code": 403,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"You do not have permission to access this resource\"\n}"
+                },
+                {
+                  "name": "404 Resource not found",
+                  "originalRequest": {},
+                  "status": "Resource not found",
+                  "code": 404,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Resource not found\"\n}"
+                },
+                {
+                  "name": "500 Internal server error",
+                  "originalRequest": {},
+                  "status": "Internal server error",
+                  "code": 500,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Internal server error\"\n}"
+                }
+              ]
+            },
+            {
+              "name": "Delete global category",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/categories/00000000-0000-0000-0000-000000000001",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "categories",
+                    "00000000-0000-0000-0000-000000000001"
+                  ],
+                  "query": []
+                },
+                "description": "Delete global category",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{accessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "200 Global category deleted",
+                  "originalRequest": {},
+                  "status": "Global category deleted",
+                  "code": 200,
+                  "header": [],
+                  "body": "{\n  \"success\": true,\n  \"message\": \"Global category deleted\",\n  \"data\": null\n}"
+                },
+                {
+                  "name": "400 Validation failed",
+                  "originalRequest": {},
+                  "status": "Validation failed",
+                  "code": 400,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\"\n}"
+                },
+                {
+                  "name": "401 Authentication token is required",
+                  "originalRequest": {},
+                  "status": "Authentication token is required",
+                  "code": 401,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Authentication token is required\"\n}"
+                },
+                {
+                  "name": "403 You do not have permission to access this resource",
+                  "originalRequest": {},
+                  "status": "You do not have permission to access this resource",
+                  "code": 403,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"You do not have permission to access this resource\"\n}"
+                },
+                {
+                  "name": "404 Resource not found",
+                  "originalRequest": {},
+                  "status": "Resource not found",
+                  "code": 404,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Resource not found\"\n}"
+                },
+                {
+                  "name": "500 Internal server error",
+                  "originalRequest": {},
+                  "status": "Internal server error",
+                  "code": 500,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Internal server error\"\n}"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "/admin/logs",
+          "item": [
+            {
+              "name": "List audit logs",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/logs",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "logs"
+                  ],
+                  "query": [
+                    {
+                      "key": "action",
+                      "value": "string",
+                      "description": ""
+                    },
+                    {
+                      "key": "actorId",
+                      "value": "00000000-0000-0000-0000-000000000001",
+                      "description": ""
+                    },
+                    {
+                      "key": "page",
+                      "value": 1,
+                      "description": ""
+                    },
+                    {
+                      "key": "limit",
+                      "value": 20,
+                      "description": ""
+                    }
+                  ]
+                },
+                "description": "List audit logs",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{accessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "200 Audit logs fetched",
+                  "originalRequest": {},
+                  "status": "Audit logs fetched",
+                  "code": 200,
+                  "header": [],
+                  "body": "{\n  \"success\": true,\n  \"message\": \"Audit logs fetched\",\n  \"data\": null\n}"
+                },
+                {
+                  "name": "400 Validation failed",
+                  "originalRequest": {},
+                  "status": "Validation failed",
+                  "code": 400,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\"\n}"
+                },
+                {
+                  "name": "401 Authentication token is required",
+                  "originalRequest": {},
+                  "status": "Authentication token is required",
+                  "code": 401,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Authentication token is required\"\n}"
+                },
+                {
+                  "name": "403 You do not have permission to access this resource",
+                  "originalRequest": {},
+                  "status": "You do not have permission to access this resource",
+                  "code": 403,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"You do not have permission to access this resource\"\n}"
+                },
+                {
+                  "name": "500 Internal server error",
+                  "originalRequest": {},
+                  "status": "Internal server error",
+                  "code": 500,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Internal server error\"\n}"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "/admin/email-templates",
+          "item": [
+            {
+              "name": "List email templates",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/email-templates",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "email-templates"
+                  ],
+                  "query": [
+                    {
+                      "key": "search",
+                      "value": "string",
+                      "description": ""
+                    }
+                  ]
+                },
+                "description": "List email templates",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{accessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "200 Email templates fetched",
+                  "originalRequest": {},
+                  "status": "Email templates fetched",
+                  "code": 200,
+                  "header": [],
+                  "body": "{\n  \"success\": true,\n  \"message\": \"Email templates fetched\",\n  \"data\": null\n}"
+                },
+                {
+                  "name": "400 Validation failed",
+                  "originalRequest": {},
+                  "status": "Validation failed",
+                  "code": 400,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\"\n}"
+                },
+                {
+                  "name": "401 Authentication token is required",
+                  "originalRequest": {},
+                  "status": "Authentication token is required",
+                  "code": 401,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Authentication token is required\"\n}"
+                },
+                {
+                  "name": "403 You do not have permission to access this resource",
+                  "originalRequest": {},
+                  "status": "You do not have permission to access this resource",
+                  "code": 403,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"You do not have permission to access this resource\"\n}"
+                },
+                {
+                  "name": "500 Internal server error",
+                  "originalRequest": {},
+                  "status": "Internal server error",
+                  "code": 500,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Internal server error\"\n}"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "/admin/email-templates/{id}",
+          "item": [
+            {
+              "name": "Update email template",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/email-templates/00000000-0000-0000-0000-000000000001",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "email-templates",
+                    "00000000-0000-0000-0000-000000000001"
+                  ],
+                  "query": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"subject\": \"Welcome to Expense Tracker\",\n  \"body\": \"<p>Hello {{name}}</p>\",\n  \"isActive\": true\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "description": "Update email template",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{accessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "200 Email template updated",
+                  "originalRequest": {},
+                  "status": "Email template updated",
+                  "code": 200,
+                  "header": [],
+                  "body": "{\n  \"success\": true,\n  \"message\": \"Email template updated\",\n  \"data\": null\n}"
+                },
+                {
+                  "name": "400 Validation failed",
+                  "originalRequest": {},
+                  "status": "Validation failed",
+                  "code": 400,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\"\n}"
+                },
+                {
+                  "name": "401 Authentication token is required",
+                  "originalRequest": {},
+                  "status": "Authentication token is required",
+                  "code": 401,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Authentication token is required\"\n}"
+                },
+                {
+                  "name": "403 You do not have permission to access this resource",
+                  "originalRequest": {},
+                  "status": "You do not have permission to access this resource",
+                  "code": 403,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"You do not have permission to access this resource\"\n}"
+                },
+                {
+                  "name": "404 Resource not found",
+                  "originalRequest": {},
+                  "status": "Resource not found",
+                  "code": 404,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Resource not found\"\n}"
+                },
+                {
+                  "name": "500 Internal server error",
+                  "originalRequest": {},
+                  "status": "Internal server error",
+                  "code": 500,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Internal server error\"\n}"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "/admin/settings",
+          "item": [
+            {
+              "name": "Get platform settings",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/settings",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "settings"
+                  ],
+                  "query": []
+                },
+                "description": "Get platform settings",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{accessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "200 Settings fetched",
+                  "originalRequest": {},
+                  "status": "Settings fetched",
+                  "code": 200,
+                  "header": [],
+                  "body": "{\n  \"success\": true,\n  \"message\": \"Settings fetched\",\n  \"data\": null\n}"
+                },
+                {
+                  "name": "401 Authentication token is required",
+                  "originalRequest": {},
+                  "status": "Authentication token is required",
+                  "code": 401,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Authentication token is required\"\n}"
+                },
+                {
+                  "name": "403 You do not have permission to access this resource",
+                  "originalRequest": {},
+                  "status": "You do not have permission to access this resource",
+                  "code": 403,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"You do not have permission to access this resource\"\n}"
+                },
+                {
+                  "name": "500 Internal server error",
+                  "originalRequest": {},
+                  "status": "Internal server error",
+                  "code": 500,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Internal server error\"\n}"
+                }
+              ]
+            },
+            {
+              "name": "Update platform settings",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/settings",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "settings"
+                  ],
+                  "query": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"maintenanceMode\": false,\n  \"allowRegistration\": true,\n  \"defaultCurrency\": \"BDT\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "description": "Update platform settings",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{accessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "200 Settings updated",
+                  "originalRequest": {},
+                  "status": "Settings updated",
+                  "code": 200,
+                  "header": [],
+                  "body": "{\n  \"success\": true,\n  \"message\": \"Settings updated\",\n  \"data\": null\n}"
+                },
+                {
+                  "name": "400 Validation failed",
+                  "originalRequest": {},
+                  "status": "Validation failed",
+                  "code": 400,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\"\n}"
+                },
+                {
+                  "name": "401 Authentication token is required",
+                  "originalRequest": {},
+                  "status": "Authentication token is required",
+                  "code": 401,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"Authentication token is required\"\n}"
+                },
+                {
+                  "name": "403 You do not have permission to access this resource",
+                  "originalRequest": {},
+                  "status": "You do not have permission to access this resource",
+                  "code": 403,
+                  "header": [],
+                  "body": "{\n  \"success\": false,\n  \"message\": \"You do not have permission to access this resource\"\n}"
                 },
                 {
                   "name": "500 Internal server error",

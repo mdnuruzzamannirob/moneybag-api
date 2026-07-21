@@ -38,6 +38,18 @@
       "name": "Reports"
     },
     {
+      "name": "Dashboard"
+    },
+    {
+      "name": "Family"
+    },
+    {
+      "name": "Notifications"
+    },
+    {
+      "name": "Billing"
+    },
+    {
       "name": "Admin"
     }
   ],
@@ -546,6 +558,64 @@
         }
       }
     },
+    "/auth/google": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "security": [],
+        "summary": "Login or register with Google",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "idToken"
+                ],
+                "properties": {
+                  "idToken": {
+                    "type": "string",
+                    "example": "google-id-token"
+                  }
+                },
+                "example": {
+                  "idToken": "google-id-token"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Google authentication successful"
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Validation failed"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/auth/logout": {
       "post": {
         "tags": [
@@ -728,6 +798,41 @@
         }
       }
     },
+    "/auth/me": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Get authenticated auth session profile",
+        "responses": {
+          "200": {
+            "description": "Authenticated user fetched"
+          },
+          "401": {
+            "description": "Authentication token is required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Authentication token is required"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/users/me": {
       "get": {
         "tags": [
@@ -847,6 +952,72 @@
             }
           }
         }
+      },
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Delete current account",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "password"
+                ],
+                "properties": {
+                  "password": {
+                    "type": "string",
+                    "example": "Password123!"
+                  }
+                },
+                "example": {
+                  "password": "Password123!"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Account deleted"
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Validation failed"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication token is required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Authentication token is required"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Internal server error"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/users/me/password": {
@@ -887,6 +1058,68 @@
         "responses": {
           "200": {
             "description": "Password changed"
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Validation failed"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication token is required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Authentication token is required"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/me/export": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Export current user data",
+        "parameters": [
+          {
+            "name": "format",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "json",
+                "csv"
+              ],
+              "default": "json",
+              "example": "json"
+            },
+            "description": "Allowed values: json, csv"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User data exported"
           },
           "400": {
             "description": "Validation failed",
@@ -1326,7 +1559,7 @@
             "schema": {
               "type": "string",
               "format": "date-time",
-              "example": "2026-07-21T11:05:06.095Z"
+              "example": "2026-07-21T11:21:38.637Z"
             }
           },
           {
@@ -1335,7 +1568,7 @@
             "schema": {
               "type": "string",
               "format": "date-time",
-              "example": "2026-07-21T11:05:06.095Z"
+              "example": "2026-07-21T11:21:38.637Z"
             }
           },
           {
@@ -1500,7 +1733,7 @@
                   "date": {
                     "type": "string",
                     "format": "date-time",
-                    "example": "2026-07-21T11:05:06.095Z"
+                    "example": "2026-07-21T11:21:38.637Z"
                   },
                   "tags": {
                     "type": "array",
@@ -1536,7 +1769,7 @@
                   "type": "INCOME",
                   "categoryId": "00000000-0000-0000-0000-000000000001",
                   "note": "Salary for July",
-                  "date": "2026-07-21T11:05:06.095Z",
+                  "date": "2026-07-21T11:21:38.637Z",
                   "tags": [
                     "salary",
                     "monthly"
@@ -1658,6 +1891,98 @@
         }
       }
     },
+    "/transactions/{id}/receipt": {
+      "post": {
+        "tags": [
+          "Transactions"
+        ],
+        "summary": "Attach receipt image to transaction",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "00000000-0000-0000-0000-000000000001"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "receipt"
+                ],
+                "properties": {
+                  "receipt": {
+                    "type": "string",
+                    "format": "binary",
+                    "example": "string"
+                  }
+                },
+                "example": {
+                  "receipt": "string"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Receipt attached"
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Validation failed"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication token is required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Authentication token is required"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Resource not found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/transactions/{id}": {
       "patch": {
         "tags": [
@@ -1707,7 +2032,7 @@
                   "date": {
                     "type": "string",
                     "format": "date-time",
-                    "example": "2026-07-21T11:05:06.095Z"
+                    "example": "2026-07-21T11:21:38.637Z"
                   },
                   "tags": {
                     "type": "array",
@@ -1743,7 +2068,7 @@
                   "type": "INCOME",
                   "categoryId": "00000000-0000-0000-0000-000000000001",
                   "note": "Salary for July",
-                  "date": "2026-07-21T11:05:06.095Z",
+                  "date": "2026-07-21T11:21:38.637Z",
                   "tags": [
                     "salary",
                     "monthly"
@@ -2188,6 +2513,73 @@
             }
           }
         }
+      },
+      "delete": {
+        "tags": [
+          "Budgets"
+        ],
+        "summary": "Delete budget",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "00000000-0000-0000-0000-000000000001"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Budget deleted"
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Validation failed"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication token is required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Authentication token is required"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Resource not found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Internal server error"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/savings-goals": {
@@ -2291,13 +2683,13 @@
                   "deadline": {
                     "type": "string",
                     "format": "date-time",
-                    "example": "2026-07-21T11:05:06.095Z"
+                    "example": "2026-07-21T11:21:38.637Z"
                   }
                 },
                 "example": {
                   "title": "New Laptop",
                   "targetAmount": 120000,
-                  "deadline": "2026-07-21T11:05:06.095Z"
+                  "deadline": "2026-07-21T11:21:38.637Z"
                 }
               }
             }
@@ -2485,6 +2877,70 @@
                 "example": {
                   "success": false,
                   "message": "Resource not found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dashboard": {
+      "get": {
+        "tags": [
+          "Dashboard"
+        ],
+        "summary": "Get dashboard summary",
+        "parameters": [
+          {
+            "name": "month",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          },
+          {
+            "name": "year",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Dashboard fetched"
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Validation failed"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication token is required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Authentication token is required"
                 }
               }
             }
@@ -2721,7 +3177,7 @@
             "schema": {
               "type": "string",
               "format": "date-time",
-              "example": "2026-07-21T11:05:06.095Z"
+              "example": "2026-07-21T11:21:38.637Z"
             }
           },
           {
@@ -2731,7 +3187,7 @@
             "schema": {
               "type": "string",
               "format": "date-time",
-              "example": "2026-07-21T11:05:06.095Z"
+              "example": "2026-07-21T11:21:38.637Z"
             }
           }
         ],
@@ -2818,6 +3274,957 @@
         "responses": {
           "200": {
             "description": "Report exported"
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Validation failed"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication token is required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Authentication token is required"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/family/groups": {
+      "get": {
+        "tags": [
+          "Family"
+        ],
+        "summary": "List family groups",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 1,
+              "example": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 20,
+              "example": 20
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Family groups fetched"
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Validation failed"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication token is required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Authentication token is required"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Family"
+        ],
+        "summary": "Create family group",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Home"
+                  }
+                },
+                "example": {
+                  "name": "Home"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Family group created"
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Validation failed"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication token is required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Authentication token is required"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/family/groups/{id}/invite": {
+      "post": {
+        "tags": [
+          "Family"
+        ],
+        "summary": "Invite member to family group",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "00000000-0000-0000-0000-000000000001"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "email"
+                ],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "user@example.com"
+                  },
+                  "role": {
+                    "type": "string",
+                    "enum": [
+                      "MEMBER",
+                      "ADMIN"
+                    ],
+                    "example": "MEMBER"
+                  }
+                },
+                "example": {
+                  "email": "user@example.com",
+                  "role": "MEMBER"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Invitation sent"
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Validation failed"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication token is required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Authentication token is required"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Resource not found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/family/invitations/{token}/accept": {
+      "post": {
+        "tags": [
+          "Family"
+        ],
+        "summary": "Accept family invitation",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "invitation-token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Invitation accepted"
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Validation failed"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication token is required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Authentication token is required"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Resource not found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/family/groups/{id}/members/{userId}": {
+      "delete": {
+        "tags": [
+          "Family"
+        ],
+        "summary": "Remove member from family group",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "00000000-0000-0000-0000-000000000001"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "00000000-0000-0000-0000-000000000001"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Member removed"
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Validation failed"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication token is required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Authentication token is required"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Resource not found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/family/groups/{id}/transactions": {
+      "get": {
+        "tags": [
+          "Family"
+        ],
+        "summary": "List family group transactions",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "00000000-0000-0000-0000-000000000001"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2026-07-21T11:21:38.637Z"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2026-07-21T11:21:38.637Z"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 1,
+              "example": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 20,
+              "example": 20
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Family transactions fetched"
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Validation failed"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication token is required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Authentication token is required"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Resource not found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notifications": {
+      "get": {
+        "tags": [
+          "Notifications"
+        ],
+        "summary": "List notifications",
+        "parameters": [
+          {
+            "name": "isRead",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "example": true
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 1,
+              "example": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 20,
+              "example": 20
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Notifications fetched"
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Validation failed"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication token is required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Authentication token is required"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notifications/unread-count": {
+      "get": {
+        "tags": [
+          "Notifications"
+        ],
+        "summary": "Get unread notification count",
+        "responses": {
+          "200": {
+            "description": "Unread count fetched"
+          },
+          "401": {
+            "description": "Authentication token is required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Authentication token is required"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notifications/read-all": {
+      "patch": {
+        "tags": [
+          "Notifications"
+        ],
+        "summary": "Mark all notifications as read",
+        "responses": {
+          "200": {
+            "description": "Notifications marked as read"
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Validation failed"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication token is required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Authentication token is required"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notifications/{id}/read": {
+      "patch": {
+        "tags": [
+          "Notifications"
+        ],
+        "summary": "Mark notification as read",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "00000000-0000-0000-0000-000000000001"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Notification marked as read"
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Validation failed"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication token is required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Authentication token is required"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Resource not found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/billing/webhook": {
+      "post": {
+        "tags": [
+          "Billing"
+        ],
+        "security": [],
+        "summary": "Stripe billing webhook",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {}
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook processed"
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Validation failed"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/billing/plans": {
+      "get": {
+        "tags": [
+          "Billing"
+        ],
+        "summary": "List billing plans",
+        "responses": {
+          "200": {
+            "description": "Billing plans fetched"
+          },
+          "401": {
+            "description": "Authentication token is required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Authentication token is required"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/billing/subscription": {
+      "get": {
+        "tags": [
+          "Billing"
+        ],
+        "summary": "Get current subscription",
+        "responses": {
+          "200": {
+            "description": "Subscription fetched"
+          },
+          "401": {
+            "description": "Authentication token is required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Authentication token is required"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/billing/checkout": {
+      "post": {
+        "tags": [
+          "Billing"
+        ],
+        "summary": "Create Stripe checkout session",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "planId"
+                ],
+                "properties": {
+                  "planId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "00000000-0000-0000-0000-000000000001"
+                  },
+                  "successUrl": {
+                    "type": "string",
+                    "example": "http://localhost:3000/billing/success"
+                  },
+                  "cancelUrl": {
+                    "type": "string",
+                    "example": "http://localhost:3000/billing/cancel"
+                  }
+                },
+                "example": {
+                  "planId": "00000000-0000-0000-0000-000000000001",
+                  "successUrl": "http://localhost:3000/billing/success",
+                  "cancelUrl": "http://localhost:3000/billing/cancel"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Checkout session created"
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Validation failed"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication token is required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Authentication token is required"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/billing/portal": {
+      "post": {
+        "tags": [
+          "Billing"
+        ],
+        "summary": "Create Stripe customer portal session",
+        "responses": {
+          "200": {
+            "description": "Portal session created"
           },
           "400": {
             "description": "Validation failed",
@@ -2961,6 +4368,86 @@
         }
       }
     },
+    "/admin/users/{id}": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Get admin user detail",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "00000000-0000-0000-0000-000000000001"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User detail fetched"
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Validation failed"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication token is required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Authentication token is required"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "You do not have permission to access this resource",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "You do not have permission to access this resource"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Resource not found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/admin/users/{id}/status": {
       "patch": {
         "tags": [
@@ -3045,6 +4532,1724 @@
                 "example": {
                   "success": false,
                   "message": "Resource not found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/users/{id}/impersonate": {
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Create impersonation token for user",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "00000000-0000-0000-0000-000000000001"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Impersonation token created"
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Validation failed"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication token is required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Authentication token is required"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "You do not have permission to access this resource",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "You do not have permission to access this resource"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Resource not found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/users/{id}/plan": {
+      "patch": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Assign plan to user",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "00000000-0000-0000-0000-000000000001"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "planId"
+                ],
+                "properties": {
+                  "planId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "00000000-0000-0000-0000-000000000001"
+                  }
+                },
+                "example": {
+                  "planId": "00000000-0000-0000-0000-000000000001"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User plan assigned"
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Validation failed"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication token is required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Authentication token is required"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "You do not have permission to access this resource",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "You do not have permission to access this resource"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Resource not found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/subscriptions": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "List subscriptions",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 1,
+              "example": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 20,
+              "example": 20
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Subscriptions fetched"
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Validation failed"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication token is required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Authentication token is required"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "You do not have permission to access this resource",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "You do not have permission to access this resource"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/subscriptions/{id}/refund": {
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Refund subscription payment",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "00000000-0000-0000-0000-000000000001"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [],
+                "properties": {
+                  "amount": {
+                    "type": "number",
+                    "example": 10
+                  },
+                  "reason": {
+                    "type": "string",
+                    "example": "requested_by_customer"
+                  }
+                },
+                "example": {
+                  "amount": 10,
+                  "reason": "requested_by_customer"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Subscription refunded"
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Validation failed"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication token is required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Authentication token is required"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "You do not have permission to access this resource",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "You do not have permission to access this resource"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Resource not found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/subscriptions/{id}/cancel": {
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Cancel subscription",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "00000000-0000-0000-0000-000000000001"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [],
+                "properties": {
+                  "reason": {
+                    "type": "string",
+                    "example": "Admin cancellation"
+                  }
+                },
+                "example": {
+                  "reason": "Admin cancellation"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Subscription cancelled"
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Validation failed"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication token is required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Authentication token is required"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "You do not have permission to access this resource",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "You do not have permission to access this resource"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Resource not found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/subscriptions/{id}/reactivate": {
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Reactivate subscription",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "00000000-0000-0000-0000-000000000001"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Subscription reactivated"
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Validation failed"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication token is required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Authentication token is required"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "You do not have permission to access this resource",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "You do not have permission to access this resource"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Resource not found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/plans": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "List plans",
+        "parameters": [
+          {
+            "name": "includeArchived",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "example": false
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Plans fetched"
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Validation failed"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication token is required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Authentication token is required"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "You do not have permission to access this resource",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "You do not have permission to access this resource"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Create plan",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "price",
+                  "billingInterval"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Pro"
+                  },
+                  "price": {
+                    "type": "number",
+                    "example": 9.99
+                  },
+                  "billingInterval": {
+                    "type": "string",
+                    "enum": [
+                      "MONTHLY",
+                      "YEARLY"
+                    ],
+                    "example": "MONTHLY"
+                  },
+                  "features": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "example": [
+                      "string"
+                    ]
+                  },
+                  "stripePriceId": {
+                    "type": "string",
+                    "example": "price_123"
+                  }
+                },
+                "example": {
+                  "name": "Pro",
+                  "price": 9.99,
+                  "billingInterval": "MONTHLY",
+                  "features": [
+                    "string"
+                  ],
+                  "stripePriceId": "price_123"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Plan created"
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Validation failed"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication token is required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Authentication token is required"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "You do not have permission to access this resource",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "You do not have permission to access this resource"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/plans/{id}": {
+      "patch": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Update plan",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "00000000-0000-0000-0000-000000000001"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Pro"
+                  },
+                  "price": {
+                    "type": "number",
+                    "example": 9.99
+                  },
+                  "billingInterval": {
+                    "type": "string",
+                    "enum": [
+                      "MONTHLY",
+                      "YEARLY"
+                    ],
+                    "example": "MONTHLY"
+                  },
+                  "features": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "example": [
+                      "string"
+                    ]
+                  },
+                  "isActive": {
+                    "type": "boolean",
+                    "example": true
+                  }
+                },
+                "example": {
+                  "name": "Pro",
+                  "price": 9.99,
+                  "billingInterval": "MONTHLY",
+                  "features": [
+                    "string"
+                  ],
+                  "isActive": true
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Plan updated"
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Validation failed"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication token is required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Authentication token is required"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "You do not have permission to access this resource",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "You do not have permission to access this resource"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Resource not found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Archive plan",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "00000000-0000-0000-0000-000000000001"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Plan archived"
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Validation failed"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication token is required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Authentication token is required"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "You do not have permission to access this resource",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "You do not have permission to access this resource"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Resource not found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/categories": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "List global categories",
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "INCOME",
+                "EXPENSE"
+              ],
+              "example": "INCOME"
+            },
+            "description": "Allowed values: INCOME, EXPENSE"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Global categories fetched"
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Validation failed"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication token is required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Authentication token is required"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "You do not have permission to access this resource",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "You do not have permission to access this resource"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Create global category",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "type"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Food"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "INCOME",
+                      "EXPENSE"
+                    ],
+                    "example": "INCOME"
+                  },
+                  "icon": {
+                    "type": "string",
+                    "example": "utensils"
+                  },
+                  "color": {
+                    "type": "string",
+                    "example": "#f97316"
+                  }
+                },
+                "example": {
+                  "name": "Food",
+                  "type": "INCOME",
+                  "icon": "utensils",
+                  "color": "#f97316"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Global category created"
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Validation failed"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication token is required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Authentication token is required"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "You do not have permission to access this resource",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "You do not have permission to access this resource"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/categories/{id}": {
+      "patch": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Update global category",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "00000000-0000-0000-0000-000000000001"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Food"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "INCOME",
+                      "EXPENSE"
+                    ],
+                    "example": "INCOME"
+                  },
+                  "icon": {
+                    "type": "string",
+                    "example": "utensils"
+                  },
+                  "color": {
+                    "type": "string",
+                    "example": "#f97316"
+                  }
+                },
+                "example": {
+                  "name": "Food",
+                  "type": "INCOME",
+                  "icon": "utensils",
+                  "color": "#f97316"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Global category updated"
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Validation failed"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication token is required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Authentication token is required"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "You do not have permission to access this resource",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "You do not have permission to access this resource"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Resource not found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Delete global category",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "00000000-0000-0000-0000-000000000001"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Global category deleted"
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Validation failed"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication token is required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Authentication token is required"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "You do not have permission to access this resource",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "You do not have permission to access this resource"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Resource not found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/logs": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "List audit logs",
+        "parameters": [
+          {
+            "name": "action",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          },
+          {
+            "name": "actorId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "00000000-0000-0000-0000-000000000001"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 1,
+              "example": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 20,
+              "example": 20
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Audit logs fetched"
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Validation failed"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication token is required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Authentication token is required"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "You do not have permission to access this resource",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "You do not have permission to access this resource"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/email-templates": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "List email templates",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Email templates fetched"
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Validation failed"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication token is required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Authentication token is required"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "You do not have permission to access this resource",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "You do not have permission to access this resource"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/email-templates/{id}": {
+      "patch": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Update email template",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "00000000-0000-0000-0000-000000000001"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [],
+                "properties": {
+                  "subject": {
+                    "type": "string",
+                    "example": "Welcome to Expense Tracker"
+                  },
+                  "body": {
+                    "type": "string",
+                    "example": "<p>Hello {{name}}</p>"
+                  },
+                  "isActive": {
+                    "type": "boolean",
+                    "example": true
+                  }
+                },
+                "example": {
+                  "subject": "Welcome to Expense Tracker",
+                  "body": "<p>Hello {{name}}</p>",
+                  "isActive": true
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Email template updated"
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Validation failed"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication token is required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Authentication token is required"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "You do not have permission to access this resource",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "You do not have permission to access this resource"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Resource not found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/settings": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Get platform settings",
+        "responses": {
+          "200": {
+            "description": "Settings fetched"
+          },
+          "401": {
+            "description": "Authentication token is required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Authentication token is required"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "You do not have permission to access this resource",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "You do not have permission to access this resource"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Update platform settings",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [],
+                "properties": {
+                  "maintenanceMode": {
+                    "type": "boolean",
+                    "example": false
+                  },
+                  "allowRegistration": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "defaultCurrency": {
+                    "type": "string",
+                    "example": "BDT"
+                  }
+                },
+                "example": {
+                  "maintenanceMode": false,
+                  "allowRegistration": true,
+                  "defaultCurrency": "BDT"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Settings updated"
+          },
+          "400": {
+            "description": "Validation failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Validation failed"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication token is required",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "Authentication token is required"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "You do not have permission to access this resource",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "message": "You do not have permission to access this resource"
                 }
               }
             }

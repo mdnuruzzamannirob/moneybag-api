@@ -1,11 +1,29 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, URL } from 'node:url';
 import { openApiSpec } from '../docs/swagger-data.js';
 
-type JsonSchema = Record<string, any>;
-type OpenApiOperation = Record<string, any>;
+type JsonSchema = Record<string, unknown>;
+type OpenApiOperation = Record<string, unknown>;
 type OpenApiPathItem = Record<string, OpenApiOperation>;
+
+interface RequestBodyContent {
+  schema?: JsonSchema;
+  example?: unknown;
+}
+interface RequestBody {
+  content?: Record<string, RequestBodyContent>;
+}
+interface ResponseItem {
+  description?: string;
+  content?: Record<string, RequestBodyContent>;
+}
+interface Parameter {
+  in?: string;
+  name?: string;
+  description?: string;
+  schema?: JsonSchema;
+}
 
 const root = dirname(
   fileURLToPath(new URL('../package.json', import.meta.url)),
@@ -20,17 +38,22 @@ const collectionVariables = [
 
 const sampleUuid = '00000000-0000-0000-0000-000000000001';
 
-const getExampleFromSchema = (schema?: JsonSchema): any => {
+const getExampleFromSchema = (schema?: JsonSchema): unknown => {
   if (!schema) return undefined;
   if (schema.example !== undefined) return schema.example;
   if (schema.default !== undefined) return schema.default;
-  if (schema.enum?.length) return schema.enum[0];
+  if (Array.isArray(schema.enum) && schema.enum.length > 0)
+    return schema.enum[0];
 
-  switch (schema.type) {
+  const type = Array.isArray(schema.type) ? schema.type[0] : schema.type;
+
+  switch (type) {
     case 'string':
       if (schema.format === 'uuid') return sampleUuid;
       if (schema.format === 'email') return 'user@example.com';
       if (schema.format === 'date-time') return new Date().toISOString();
+      if (schema.format === 'date')
+        return new Date().toISOString().slice(0, 10);
       if (schema.format === 'binary') return '';
       return 'string';
     case 'number':
@@ -39,11 +62,15 @@ const getExampleFromSchema = (schema?: JsonSchema): any => {
     case 'boolean':
       return true;
     case 'array':
-      return [getExampleFromSchema(schema.items)];
+      return schema.items
+        ? [getExampleFromSchema(schema.items as JsonSchema)]
+        : [];
     case 'object': {
-      const output: Record<string, any> = {};
-      for (const [key, value] of Object.entries(schema.properties ?? {})) {
-        output[key] = getExampleFromSchema(value as JsonSchema);
+      const output: Record<string, unknown> = {};
+      for (const [key, value] of Object.entries(
+        (schema.properties ?? {}) as Record<string, JsonSchema>,
+      )) {
+        output[key] = getExampleFromSchema(value);
       }
       return output;
     }
@@ -53,13 +80,15 @@ const getExampleFromSchema = (schema?: JsonSchema): any => {
 };
 
 const buildExampleBody = (operation: OpenApiOperation) => {
-  const json = operation?.requestBody?.content?.['application/json'];
+  const requestBody = operation?.requestBody as RequestBody | undefined;
+  const json = requestBody?.content?.['application/json'];
   if (json?.example !== undefined) return json.example;
   return getExampleFromSchema(json?.schema);
 };
 
 const buildRequestBody = (operation: OpenApiOperation) => {
-  const json = operation?.requestBody?.content?.['application/json'];
+  const requestBody = operation?.requestBody as RequestBody | undefined;
+  const json = requestBody?.content?.['application/json'];
   if (json?.schema) {
     const example = buildExampleBody(operation);
     return {
@@ -69,30 +98,40 @@ const buildRequestBody = (operation: OpenApiOperation) => {
     };
   }
 
-  const formData = operation?.requestBody?.content?.['multipart/form-data'];
+  const formData = requestBody?.content?.['multipart/form-data'];
   if (formData?.schema) {
-    const schema = formData.schema as JsonSchema;
-    return {
-      mode: 'formdata',
-      formdata: Object.entries(schema.properties ?? {}).map(
-        ([key, value]: [string, any]) => ({
-          key,
-          type: value.format === 'binary' ? 'file' : 'text',
-          value:
-            value.format === 'binary'
-              ? ''
-              : String(getExampleFromSchema(value) ?? ''),
-        }),
-      ),
-    };
+    const schema = formData.schema;
+    const formDataFields = Object.entries(
+      (schema.properties ?? {}) as Record<string, JsonSchema>,
+    )
+      .filter((entry): entry is [string, JsonSchema] => {
+        const value = entry[1];
+        return value !== null && typeof value === 'object';
+      })
+      .map(([key, value]) => ({
+        key,
+        type: value.format === 'binary' ? 'file' : 'text',
+        value:
+          value.format === 'binary'
+            ? ''
+            : String(getExampleFromSchema(value) ?? ''),
+      }));
+
+    return formDataFields.length > 0
+      ? {
+          mode: 'formdata',
+          formdata: formDataFields,
+        }
+      : undefined;
   }
 
   return undefined;
 };
 
 const buildResponseBody = (operation: OpenApiOperation) => {
-  const responses = operation?.responses ?? {};
-  const responseItems = [];
+  const responses =
+    (operation?.responses as Record<string, ResponseItem> | undefined) ?? {};
+  const responseItems: unknown[] = [];
 
   for (const code of Object.keys(responses)) {
     const response = responses[code];
@@ -127,17 +166,19 @@ const buildResponseBody = (operation: OpenApiOperation) => {
 };
 
 const buildHeaders = (operation: OpenApiOperation) => {
+  const requestBody = operation?.requestBody as RequestBody | undefined;
   const headers = [{ key: 'Accept', value: 'application/json' }];
-  if (operation?.requestBody?.content?.['application/json']) {
+  if (requestBody?.content?.['application/json']) {
     headers.push({ key: 'Content-Type', value: 'application/json' });
   }
   return headers;
 };
 
-const buildQuery = (operation: OpenApiOperation) =>
-  (operation?.parameters ?? [])
-    .filter((parameter: any) => parameter.in === 'query')
-    .map((parameter: any) => ({
+const buildQuery = (operation: OpenApiOperation) => {
+  const parameters = (operation?.parameters as Parameter[] | undefined) ?? [];
+  return parameters
+    .filter((parameter) => parameter.in === 'query')
+    .map((parameter) => ({
       key: parameter.name,
       value:
         parameter.schema?.example ??
@@ -146,12 +187,16 @@ const buildQuery = (operation: OpenApiOperation) =>
         '',
       description:
         parameter.description ??
-        (parameter.schema?.enum?.length
-          ? `Allowed values: ${parameter.schema.enum.join(', ')}`
+        (Array.isArray(parameter.schema?.enum) && parameter.schema?.enum?.length
+          ? `Allowed values: ${(parameter.schema?.enum as unknown[]).join(
+              ', ',
+            )}`
           : ''),
     }));
+};
 
 const buildPath = (path: string, operation: OpenApiOperation) => {
+  const parameters = (operation?.parameters as Parameter[] | undefined) ?? [];
   const segments = path
     .split('/')
     .filter(Boolean)
@@ -160,8 +205,8 @@ const buildPath = (path: string, operation: OpenApiOperation) => {
       if (!match) return segment;
 
       const parameterName = match[1];
-      const parameter = (operation?.parameters ?? []).find(
-        (item: any) => item.in === 'path' && item.name === parameterName,
+      const parameter = parameters.find(
+        (item) => item.in === 'path' && item.name === parameterName,
       );
       return (
         parameter?.schema?.example ??
@@ -202,15 +247,8 @@ const buildEventScripts = (path: string) => {
   ];
 };
 
-const isPublicRoute = (path: string) =>
-  [
-    '/auth/register',
-    '/auth/login',
-    '/auth/refresh',
-    '/auth/logout',
-    '/auth/forgot-password',
-    '/auth/reset-password',
-  ].includes(path);
+const isPublicOperation = (operation: OpenApiOperation) =>
+  Array.isArray(operation.security) && operation.security.length === 0;
 
 const buildRequest = (
   path: string,
@@ -222,7 +260,7 @@ const buildRequest = (
   url: buildPath(path, operation),
   body: buildRequestBody(operation),
   description: operation.description ?? operation.summary ?? '',
-  auth: isPublicRoute(path)
+  auth: isPublicOperation(operation)
     ? undefined
     : {
         type: 'bearer',
@@ -255,16 +293,19 @@ const buildItem = ([path, methodsObject]: [string, OpenApiPathItem]) => {
 const groupByTag = () => {
   const groups = new Map<string, Array<[string, OpenApiPathItem]>>();
 
-  for (const entry of Object.entries(openApiSpec.paths ?? {})) {
+  for (const entry of Object.entries(
+    (openApiSpec.paths ?? {}) as Record<string, OpenApiPathItem>,
+  )) {
     const [, methodsObject] = entry;
     const firstOperation = methods.find((method) => methodsObject[method]);
     const firstTaggedOperation = firstOperation
       ? methodsObject[firstOperation]
       : undefined;
-    const tag = firstTaggedOperation?.tags?.[0] ?? 'Ungrouped';
+    const tags = firstTaggedOperation?.tags as string[] | undefined;
+    const tag = tags?.[0] ?? 'Ungrouped';
 
     const existing = groups.get(tag) ?? [];
-    existing.push(entry as [string, OpenApiPathItem]);
+    existing.push(entry);
     groups.set(tag, existing);
   }
 
