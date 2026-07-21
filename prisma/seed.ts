@@ -1,71 +1,28 @@
-import { PrismaPg } from '@prisma/adapter-pg'
-import bcrypt from 'bcrypt'
-import 'dotenv/config'
-import { PrismaClient } from '../src/generated/prisma/client.js'
-
-const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL })
-const prisma = new PrismaClient({ adapter })
-
-const defaultCategories = [
-  { name: 'Salary', type: 'INCOME' as const, icon: 'wallet', color: '#1f9d55' },
-  {
-    name: 'Freelance',
-    type: 'INCOME' as const,
-    icon: 'briefcase',
-    color: '#2563eb',
-  },
-  {
-    name: 'Food',
-    type: 'EXPENSE' as const,
-    icon: 'utensils',
-    color: '#f97316',
-  },
-  {
-    name: 'Transport',
-    type: 'EXPENSE' as const,
-    icon: 'car',
-    color: '#7c3aed',
-  },
-  {
-    name: 'Bills',
-    type: 'EXPENSE' as const,
-    icon: 'receipt',
-    color: '#dc2626',
-  },
-]
+import bcrypt from 'bcrypt';
+import 'dotenv/config';
+import { prisma } from '../src/config/db.js';
+import { ensureApplicationDefaults } from '../src/services/bootstrap.service.js';
 
 const main = async () => {
-  const password = await bcrypt.hash('Password123!', 12)
-
-  const admin = await prisma.user.upsert({
+  await ensureApplicationDefaults();
+  const passwordHash = await bcrypt.hash('Password123!', 12);
+  await prisma.user.upsert({
     where: { email: 'admin@etracker.com' },
-    update: {},
+    update: { role: 'ADMIN', isActive: true },
     create: {
       name: 'Admin User',
       email: 'admin@etracker.com',
-      password,
+      passwordHash,
       role: 'ADMIN',
-      currency: 'BDT',
+      currency: 'USD',
     },
-  })
-
-  for (const category of defaultCategories) {
-    const existing = await prisma.category.findFirst({
-      where: { userId: admin.id, name: category.name, type: category.type },
-    })
-
-    if (!existing) {
-      await prisma.category.create({ data: { ...category, userId: admin.id } })
-    }
-  }
-}
+  });
+};
 
 main()
-  .then(async () => {
-    await prisma.$disconnect()
-  })
+  .then(() => prisma.$disconnect())
   .catch(async (error) => {
-    console.error(error)
-    await prisma.$disconnect()
-    process.exit(1)
-  })
+    console.error(error);
+    await prisma.$disconnect();
+    process.exit(1);
+  });

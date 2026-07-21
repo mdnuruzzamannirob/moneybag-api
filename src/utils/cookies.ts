@@ -37,8 +37,7 @@ const baseCsrfCookieOptions = {
   path: '/',
 };
 
-const envRecord = process.env as Record<string, string | undefined>;
-const COOKIE_DOMAIN = envRecord.COOKIE_DOMAIN;
+const COOKIE_DOMAIN = env.COOKIE_DOMAIN || undefined;
 
 const withDomain = <T extends Record<string, unknown>>(opts: T): T => {
   return COOKIE_DOMAIN ? ({ ...opts, domain: COOKIE_DOMAIN } as T) : opts;
@@ -62,7 +61,7 @@ export const setAuthCookies = (
     withDomain({
       ...baseCookieOptions,
       maxAge: SEVEN_DAYS_MS,
-      path: '/api/auth/refresh',
+      path: '/api/auth',
     }),
   );
   ensureCsrfCookie(res);
@@ -70,6 +69,11 @@ export const setAuthCookies = (
 
 export const clearAuthCookies = (res: Response) => {
   res.clearCookie(ACCESS_COOKIE, withDomain({ ...baseCookieOptions }));
+  res.clearCookie(
+    REFRESH_COOKIE,
+    withDomain({ ...baseCookieOptions, path: '/api/auth' }),
+  );
+  // Also clear the legacy narrower cookie path during upgrades.
   res.clearCookie(
     REFRESH_COOKIE,
     withDomain({ ...baseCookieOptions, path: '/api/auth/refresh' }),

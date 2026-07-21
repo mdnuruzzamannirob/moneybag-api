@@ -1,7 +1,8 @@
-import { describe, it, expect, beforeEach } from '@jest/globals';
+import { describe, it, expect, beforeEach } from 'vitest';
 import request from 'supertest';
 import app from '../../src/app.js';
 import { prisma } from '../../src/config/db.js';
+import { readCookie } from '../helpers/auth.js';
 
 describe('User Module Integration Tests', () => {
   const testUser = {
@@ -19,7 +20,7 @@ describe('User Module Integration Tests', () => {
       .post('/api/auth/register')
       .send(testUser)
       .expect(201);
-    token = regRes.body.data.accessToken;
+    token = readCookie(regRes.headers['set-cookie'], 'accessToken')!;
     userId = regRes.body.data.user.id;
   });
 

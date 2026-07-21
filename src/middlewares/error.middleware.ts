@@ -1,6 +1,8 @@
 import type { ErrorRequestHandler, RequestHandler } from 'express';
+import multer from 'multer';
 import { ZodError } from 'zod';
 import { env } from '../config/env.js';
+import { captureException } from '../config/monitoring.js';
 import { Prisma } from '../generated/prisma/client.js';
 import { AppError, sendResponse } from '../utils/response.js';
 
@@ -9,6 +11,16 @@ export const notFoundHandler: RequestHandler = (req, _res, next) => {
 };
 
 export const errorHandler: ErrorRequestHandler = (error, _req, res, _next) => {
+  if (error instanceof multer.MulterError) {
+    const message =
+      error.code === 'LIMIT_FILE_SIZE'
+        ? 'Uploaded file exceeds the allowed size'
+        : error.message;
+    return sendResponse(res, 413, message, undefined, undefined, {
+      code: error.code,
+    });
+  }
+
   if (error instanceof ZodError) {
     return sendResponse(
       res,
@@ -86,9 +98,15 @@ export const errorHandler: ErrorRequestHandler = (error, _req, res, _next) => {
   const message =
     error instanceof AppError ? error.message : 'Internal server error';
 
+  if (statusCode >= 500) captureException(error);
+
   return res.status(statusCode).json({
     success: false,
     message,
+    ...(error instanceof AppError && error.code ? { code: error.code } : {}),
+    ...(error instanceof AppError && error.details !== undefined
+      ? { errors: error.details }
+      : {}),
     ...(env.NODE_ENV !== 'production' && error instanceof Error
       ? { stack: error.stack }
       : {}),

@@ -10,6 +10,9 @@ const CSRF_SAFE_PREFIXES = [
   '/api/auth/refresh',
   '/api/auth/forgot-password',
   '/api/auth/reset-password',
+  '/api/auth/google',
+  '/api/auth/logout',
+  '/api/billing/webhook',
 ];
 
 export const csrfProtection = (
@@ -20,6 +23,12 @@ export const csrfProtection = (
   ensureCsrfCookie(res);
 
   if (!UNSAFE_METHODS.has(req.method)) {
+    return next();
+  }
+
+  // Bearer tokens are explicit, non-ambient credentials and are not vulnerable
+  // to browser CSRF. Cookie-authenticated mutations still require double-submit.
+  if (req.headers.authorization?.startsWith('Bearer ')) {
     return next();
   }
 

@@ -19,10 +19,10 @@ export const createCategorySchema = z
   .object({
     body: z
       .object({
-        name: z.string().min(1),
+        name: z.string().trim().min(1).max(100),
         type: typeSchema,
-        icon: z.string().optional(),
-        color: z.string().optional(),
+        icon: z.string().trim().max(100).optional(),
+        color: z.string().regex(/^#[0-9a-fA-F]{6}$/).optional(),
       })
       .strict(),
   })

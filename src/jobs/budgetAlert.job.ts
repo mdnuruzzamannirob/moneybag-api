@@ -1,43 +1,95 @@
 import cron from 'node-cron';
 import { prisma } from '../config/db.js';
-import { sendMail } from '../utils/mailer.js';
+import { calculateBudgetProgress } from '../modules/budget/service.js';
+import { sendTemplateMail } from '../utils/mailer.js';
 
-export const runBudgetAlertJob = async () => {
-  const now = new Date();
-  const month = now.getMonth() + 1;
-  const year = now.getFullYear();
+type Preferences = {
+  emailBudgetAlerts?: boolean;
+  inAppBudgetAlerts?: boolean;
+};
+
+export const runBudgetAlertJob = async (runAt = new Date()) => {
+  const month = runAt.getUTCMonth() + 1;
+  const year = runAt.getUTCFullYear();
   const budgets = await prisma.budget.findMany({
     where: { month, year },
     include: { category: true, user: true },
   });
 
   for (const budget of budgets) {
-    const start = new Date(year, month - 1, 1);
-    const end = new Date(year, month, 1);
-    const total = await prisma.transaction.aggregate({
-      _sum: { amount: true },
-      where: {
-        userId: budget.userId,
-        categoryId: budget.categoryId,
-        type: 'EXPENSE',
-        date: { gte: start, lt: end },
-      },
-    });
-    const spent = total._sum.amount ?? 0;
-    const usedPercent = budget.limit > 0 ? (spent / budget.limit) * 100 : 0;
+    const progress = await calculateBudgetProgress(budget);
+    if (!progress.thresholdCrossed) continue;
+    const preferences = budget.user.notificationPreferences as Preferences;
+    const budgetName = budget.category?.name ?? 'Overall expenses';
+    const dedupeKey = `budget-alert:${budget.id}:${year}-${month}`;
 
-    if (usedPercent >= budget.alertThreshold) {
-      await sendMail(
+    let firstDelivery = false;
+    if (preferences.inAppBudgetAlerts !== false) {
+      const existing = await prisma.notification.findUnique({
+        where: { dedupeKey },
+      });
+      if (!existing) {
+        await prisma.notification.create({
+          data: {
+            userId: budget.userId,
+            type: 'BUDGET_ALERT',
+            title: `Budget alert: ${budgetName}`,
+            message: `You have used ${progress.percentUsed.toFixed(1)}% of this budget.`,
+            data: {
+              budgetId: budget.id,
+              spent: progress.spent,
+              effectiveLimit: progress.effectiveLimit,
+              percentUsed: progress.percentUsed,
+            },
+            dedupeKey,
+          },
+        });
+        firstDelivery = true;
+      }
+    } else {
+      const emailMarker = await prisma.notification.findUnique({
+        where: { dedupeKey: `${dedupeKey}:email` },
+      });
+      if (!emailMarker) {
+        await prisma.notification.create({
+          data: {
+            userId: budget.userId,
+            type: 'BUDGET_ALERT',
+            title: `Budget alert delivered: ${budgetName}`,
+            message: 'Email-only alert delivery marker',
+            dedupeKey: `${dedupeKey}:email`,
+            readAt: new Date(),
+          },
+        });
+        firstDelivery = true;
+      }
+    }
+
+    if (firstDelivery && preferences.emailBudgetAlerts !== false) {
+      await sendTemplateMail(
+        'budget-alert',
         budget.user.email,
-        `Budget alert: ${budget.category.name}`,
-        `You have used ${usedPercent.toFixed(1)}% of your ${budget.category.name} budget.`,
-      );
+        {
+          name: budget.user.name,
+          budgetName,
+          percentUsed: progress.percentUsed.toFixed(1),
+          spent: progress.spent,
+          limit: progress.effectiveLimit,
+        },
+        {
+          subject: 'Budget alert: {{budgetName}}',
+          body: '<p>You have used {{percentUsed}}% of your {{budgetName}} budget.</p>',
+        },
+      ).catch(() => undefined);
     }
   }
 };
 
-export const scheduleBudgetAlertJob = () => {
-  cron.schedule('0 8 * * *', () => {
-    void runBudgetAlertJob();
-  });
-};
+export const scheduleBudgetAlertJob = () =>
+  cron.schedule(
+    '0 8 * * *',
+    () => {
+      void runBudgetAlertJob();
+    },
+    { timezone: 'UTC', noOverlap: true, name: 'budget-alerts' },
+  );

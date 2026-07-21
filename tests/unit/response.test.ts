@@ -1,4 +1,4 @@
-import { jest, describe, beforeEach, it, expect } from '@jest/globals';
+import { vi, describe, beforeEach, it, expect } from 'vitest';
 import type { Response } from 'express';
 import { sendResponse, AppError } from '../../src/utils/response.js';
 
@@ -8,8 +8,8 @@ describe('Response Utility', () => {
 
     beforeEach(() => {
       mockResponse = {
-        status: jest.fn(() => mockResponse) as unknown as Response['status'],
-        json: jest.fn() as unknown as Response['json'],
+        status: vi.fn(() => mockResponse) as unknown as Response['status'],
+        json: vi.fn() as unknown as Response['json'],
       };
     });
 

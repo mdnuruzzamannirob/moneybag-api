@@ -53,3 +53,12 @@ export const update: RequestHandler = async (req, res, next) => {
     next(error);
   }
 };
+
+export const remove: RequestHandler = async (req, res, next) => {
+  try {
+    await service.remove(req.user!.id, String(req.params.id));
+    sendResponse(res, 200, 'Budget deleted');
+  } catch (error) {
+    next(error);
+  }
+};

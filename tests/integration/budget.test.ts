@@ -1,7 +1,8 @@
-import { beforeEach, describe, expect, it } from '@jest/globals';
+import { beforeEach, describe, expect, it } from 'vitest';
 import request from 'supertest';
 import app from '../../src/app.js';
 import { prisma } from '../../src/config/db.js';
+import { readCookie } from '../helpers/auth.js';
 
 describe('Budget Module Integration Tests', () => {
   const testUser = {
@@ -20,11 +21,11 @@ describe('Budget Module Integration Tests', () => {
       .post('/api/auth/register')
       .send(testUser)
       .expect(201);
-    token = regRes.body.data.accessToken;
+    token = readCookie(regRes.headers['set-cookie'], 'accessToken')!;
     userId = regRes.body.data.user.id;
 
     const categories = await prisma.category.findMany({
-      where: { userId },
+      where: { OR: [{ userId }, { userId: null }] },
     });
     categoryIdFood = categories.find((c) => c.type === 'EXPENSE')!.id;
   });

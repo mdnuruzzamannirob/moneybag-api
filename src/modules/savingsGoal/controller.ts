@@ -34,11 +34,7 @@ export const contribute: RequestHandler = async (req, res, next) => {
       res,
       200,
       'Contribution added',
-      await service.contribute(
-        req.user!.id,
-        String(req.params.id),
-        req.body.amount,
-      ),
+      await service.contribute(req.user!.id, String(req.params.id), req.body),
     );
   } catch (error) {
     next(error);

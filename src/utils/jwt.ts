@@ -6,6 +6,7 @@ export type JwtPayload = {
   email: string;
   role: string;
   jti?: string;
+  impersonatedBy?: string;
 };
 
 const accessOptions: SignOptions = {
@@ -20,6 +21,9 @@ export const signAccessToken = (payload: JwtPayload) =>
 
 export const signRefreshToken = (payload: JwtPayload) =>
   jwt.sign(payload, env.JWT_REFRESH_SECRET, refreshOptions);
+
+export const signImpersonationToken = (payload: JwtPayload) =>
+  jwt.sign(payload, env.JWT_ACCESS_SECRET, { expiresIn: '10m' });
 
 export const verifyAccessToken = (token: string) =>
   jwt.verify(token, env.JWT_ACCESS_SECRET) as JwtPayload;
