@@ -104,5 +104,8 @@
       "version": "^11.3.0",
       "onFail": "download"
     }
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
   }
 }
