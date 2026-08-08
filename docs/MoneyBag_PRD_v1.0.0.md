@@ -33,16 +33,16 @@ This document does not define detailed database implementation, frontend compone
 
 ## Table of Contents
 
-1. Executive Strategy & Business Context
-2. Identity, Tenant & Access Architecture
-3. Subscription, Billing & Entitlement Engine
-4. Functional Domain Specifications
-5. User Experience (UX) & Interaction Design
-6. Platform Architecture, Data & Integrations
-7. Security, Privacy & Regulatory Compliance
-8. Internal Operations & Platform Administration
-9. Delivery Strategy & Phased Rollout
-10. Appendix A — Product Owner Sign-Off Checklist
+- [1. Executive Strategy & Business Context](#section-1-executive-strategy--business-context)
+- [2. Identity, Tenant & Access Architecture](#section-2-identity-tenant--access-architecture)
+- [3. Subscription, Billing & Entitlement Engine](#section-3-subscription-billing--entitlement-engine)
+- [4. Functional Domain Specifications](#section-4-functional-domain-specifications)
+- [5. User Experience (UX) & Interaction Design](#section-5-user-experience-ux--interaction-design)
+- [6. Platform Architecture, Data & Integrations](#section-6-platform-architecture-data--integrations)
+- [7. Security, Privacy & Regulatory Compliance](#section-7-security-privacy--regulatory-compliance)
+- [8. Internal Operations & Platform Administration](#section-8-internal-operations--platform-administration)
+- [9. Delivery Strategy & Phased Rollout](#section-9-delivery-strategy--phased-rollout)
+- [10. Appendix A — Product Owner Sign-Off Checklist](#appendix-a-product-owner-sign-off-checklist)
 
 ---
 
